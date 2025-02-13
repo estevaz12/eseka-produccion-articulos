@@ -1,8 +1,6 @@
 # Produccion
 
-
- -javafx-maven-plugin-> Compilar y ejecutar-> mvn clean javafx:run
+ -Compilar y ejecutar con IDE (javafx-maven-plugin) -> "mvn compile clean javafx:run"
  
- -Fat JAR (shade plugin): you will need a main class that doesn't extend from Application.
- 
- Compilar-> mvn clean package
+ -Compilar Fat JAR ejecutable (shade plugin) -> "mvn clean package" 
+ NOTE: you will need a main class that doesn't extend from Application.
