@@ -16,10 +16,28 @@ import java.util.List;
 import static ar.com.leo.produccion.jdbc.DataSourceConfig.dataSource;
 
 // * @author Leo
+/**
+ * Clase que contiene metodos para obtener la produccion de cada articulo en una sala desde una fecha hasta otra.
+ * @author Leo
+ */
 public class ArticuloProducidoDAO {
 
+    /**
+     * Formato de fecha para SQL
+     */
     public final static DateTimeFormatter SQL_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
+    /**
+     * Obtiene la produccion de cada articulo en una sala desde una fecha hasta otra.
+     * @param roomCode Codigo de la sala.
+     * @param fechaInicio Fecha de inicio de la produccion.
+     * @param fechaFin Fecha de fin de la produccion.
+     * @param actual Indica si se quiere obtener la produccion actual o la produccion
+     *               total.
+     * @param articulo Articulo a filtrar.
+     * @return Lista de articulos producidos.
+     * @throws SQLException Si ocurre un error en la BD.
+     */
     public static List<ArticuloProducido> obtenerProduccion(String roomCode, LocalDateTime fechaInicio, LocalDateTime fechaFin, boolean actual, String articulo) throws SQLException {
 
         final double docena = roomCode.equals("SEAMLESS") ? 12 : 24;
@@ -90,11 +108,25 @@ public class ArticuloProducidoDAO {
         try (Connection con = dataSource.getConnection()) {
             try (PreparedStatement ps = con.prepareStatement(query);
                  ResultSet rs = ps.executeQuery()) {
+
+                // Iterate through all style codes in PRODUCTIONS_MONITOR table
                 while (rs.next()) {
-                    if (rs.getInt("Unidades") > 0) {
+
+                    // Get the style code, number of pieces produced and whether it is being produced or not
+                    final String styleCode = rs.getString("StyleCode").trim();
+                    final int unidades = rs.getInt("Unidades");
+                    final String produciendo = rs.getString("Produciendo").replaceAll("-$", "");
+
+                    // Check if the style code is valid (i.e., has more than 0 pieces produced)
+                    if (unidades > 0) {
+
+                        // Create a new ArticuloProducido object
                         final ArticuloProducido articuloProducido = new ArticuloProducido();
-                        final String styleCode = rs.getString("StyleCode").trim();
+
+                        // Parse the style code (if it is long enough)
                         if (styleCode.length() > 6) {
+
+                            // Get article, size and color from style code
                             String art = styleCode.substring(0, 5);
                             String talle;
                             if (styleCode.charAt(5) == '9') {
@@ -103,6 +135,8 @@ public class ArticuloProducidoDAO {
                                 talle = "T." + styleCode.charAt(5);
                             }
                             String color = styleCode.substring(6, 8);
+
+                            // Check if the style code has a special size (.2, .6 or .8)
                             if (styleCode.length() > 8 && styleCode.startsWith("02", 14)) // .2
                                 articuloProducido.setStyleCode(art + " " + talle + " " + color + " (.2)");
                             else if (styleCode.length() > 8 && styleCode.startsWith("06", 14)) // .6
@@ -111,19 +145,23 @@ public class ArticuloProducidoDAO {
                                 articuloProducido.setStyleCode(art + " " + talle + " " + color + " (.8)");
                             else
                                 articuloProducido.setStyleCode(art + " " + talle + " " + color);
-                            int unidades = rs.getInt("Unidades");
+
+                            // Adjust number of pieces produced if the style code contains #, % or $
                             if (styleCode.contains("#")) {
                                 unidades *= 2;
                             } else if (styleCode.contains("%") || styleCode.contains("$")) {
                                 unidades /= 2;
                             }
+
+                            // Set number of pieces produced and number of dozen
                             articuloProducido.setUnidades(unidades);
                             articuloProducido.setDocenas((BigDecimal.valueOf(unidades / docena).setScale(1, RoundingMode.HALF_UP)).doubleValue());
-                            articuloProducido.setProduciendo(rs.getString("Produciendo").replaceAll("-$", ""));
+
+                            // Set if the style code is being produced or not
+                            articuloProducido.setProduciendo(produciendo);
+
+                            // Add the ArticuloProducido object to the list
                             articulosProducidos.add(articuloProducido);
-                        }
-                    }
-                }
             } catch (SQLException e) {
                 throw e;
 //                e.printStackTrace();

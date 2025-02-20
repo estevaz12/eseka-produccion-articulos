@@ -71,6 +71,13 @@ public class ProduccionController implements Initializable {
     final DateTimeFormatter fromDateFormatter = DateTimeFormatter.ofPattern("[dd/MM/yyyy][dd/M/yyyy][dd/M/yy][dd/MM/yy][dd-MM-yyyy][dd-MM-yy][ddMMyyyy][ddMMyy][ddMyy]");
     final DateTimeFormatter toDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    /**
+     * Initializes the controller after its root element has been completely processed.
+     * Sets an error message if the database is not initialized, otherwise proceeds with initialization.
+     *
+     * @param url the location used to resolve relative paths for the root object, or null if the location is not known.
+     * @param rb the resources used to localize the root object, or null if the root object was not localized.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         if (DataSourceConfig.dataSource == null) {
@@ -82,40 +89,48 @@ public class ProduccionController implements Initializable {
     }
 
     private void init() {
+        // Set default locale
         Locale.setDefault(Locale.getDefault());
 
         Platform.runLater(() -> {
+            // Initialize sector combo box with predefined values
             sectorComboBox.setItems(FXCollections.observableList(List.of("HOMBRE", "SEAMLESS")));
             sectorComboBox.getSelectionModel().select(1);
 
-            fechaInicioDatePicker.setConverter(
-                    new StringConverter<>() {
-                        @Override
-                        public String toString(LocalDate date) {
-                            return (date != null) ? toDateFormatter.format(date) : "";
-                        }
+            // Set date converters for date pickers
+            fechaInicioDatePicker.setConverter(new StringConverter<>() {
+                @Override
+                public String toString(LocalDate date) {
+                    // Format date to string
+                    return (date != null) ? toDateFormatter.format(date) : "";
+                }
 
-                        @Override
-                        public LocalDate fromString(String string) {
-                            return (string != null && !string.isEmpty()) ? LocalDate.parse(string, fromDateFormatter) : null;
-                        }
-                    });
-            fechaFinDatePicker.setConverter(
-                    new StringConverter<>() {
-                        @Override
-                        public String toString(LocalDate date) {
-                            return (date != null) ? toDateFormatter.format(date) : "";
-                        }
+                @Override
+                public LocalDate fromString(String string) {
+                    // Parse string to LocalDate
+                    return (string != null && !string.isEmpty()) ? LocalDate.parse(string, fromDateFormatter) : null;
+                }
+            });
 
-                        @Override
-                        public LocalDate fromString(String string) {
-                            return (string != null && !string.isEmpty()) ? LocalDate.parse(string, fromDateFormatter) : null;
-                        }
-                    });
+            fechaFinDatePicker.setConverter(new StringConverter<>() {
+                @Override
+                public String toString(LocalDate date) {
+                    // Format date to string
+                    return (date != null) ? toDateFormatter.format(date) : "";
+                }
 
+                @Override
+                public LocalDate fromString(String string) {
+                    // Parse string to LocalDate
+                    return (string != null && !string.isEmpty()) ? LocalDate.parse(string, fromDateFormatter) : null;
+                }
+            });
+
+            // Set initial date values
             fechaInicioDatePicker.setValue(LocalDate.now().withDayOfMonth(1));
             fechaFinDatePicker.setValue(LocalDate.now());
-            // Table
+
+            // Configure table column cell value factories
             colArticulo.setCellValueFactory(new PropertyValueFactory<>("styleCode"));
             colUnidades.setCellValueFactory(new PropertyValueFactory<>("unidades"));
             colUnidades.setCellFactory(new Callback<>() {
@@ -130,9 +145,11 @@ public class ProduccionController implements Initializable {
                                 setText(null);
                                 setTooltip(null);
                             } else {
+                                // Get the current ArticuloProducido item
                                 final ArticuloProducido articuloProducido = getTableRow().getItem();
                                 if (articuloProducido != null) {
                                     setText(item.toString());
+                                    // Set tooltip based on style code
                                     if (articuloProducido.getStyleCode().contains("#")) {
                                         final int unidades = articuloProducido.getUnidades() / 2;
                                         final Tooltip tooltip = new Tooltip("" + unidades);
@@ -156,17 +173,21 @@ public class ProduccionController implements Initializable {
             colDocenas.setCellValueFactory(new PropertyValueFactory<>("docenas"));
             colProduciendo.setCellValueFactory(new PropertyValueFactory<>("produciendo"));
 
+            // Set row factory for table view
             articulosTableView.setRowFactory(tv -> new TableRow<>() {
                 @Override
                 protected void updateItem(ArticuloProducido articuloProducido, boolean empty) {
                     super.updateItem(articuloProducido, empty);
                     setStyle("");
                     if (articuloProducido != null) {
+                        // Highlight rows that are producing
                         if (!articuloProducido.getProduciendo().equals("NO"))
                             setStyle("-fx-background-color: #c6d4ff;");
                     }
                 }
             });
+
+            // Request focus on articulo text box
             articuloTextBox.requestFocus();
         });
     }
@@ -183,51 +204,103 @@ public class ProduccionController implements Initializable {
     }
 
     private void mostrarTablaArticulos() {
+        // Clear table view items
         articulosTableView.setItems(null);
 
+        // Get dates from date picker
         LocalDateTime fechaInicio;
         LocalDateTime fechaFin;
 
+        // Set start date and time
         fechaInicio = fechaInicioDatePicker.getValue().atTime(6, 0, 1);
+
+        // Set end date and time based on actual checkbox
         if (actualCheckBox.isSelected()) {
+            // If checkbox is selected, set end date to now
             fechaFin = LocalDateTime.now();
         } else {
+            // If checkbox is not selected, set end date and time based on date picker
             fechaFin = fechaFinDatePicker.getValue().atTime(6, 0, 0);
         }
+
+        // Check if start date is before end date
         if (fechaInicio.isBefore(fechaFin)) {
-            articuloProducidoTask = new ArticuloProducidoTask(sectorComboBox.getSelectionModel().getSelectedItem(), fechaInicio, fechaFin, actualCheckBox.isSelected(), articuloTextBox.getText());
+            // Create new ArticuloProducidoTask
+            articuloProducidoTask = new ArticuloProducidoTask(
+                    // Get selected sector from combo box
+                    sectorComboBox.getSelectionModel().getSelectedItem(),
+                    // Get start date
+                    fechaInicio,
+                    // Get end date
+                    fechaFin,
+                    // Get checkbox state
+                    actualCheckBox.isSelected(),
+                    // Get text from text box
+                    articuloTextBox.getText()
+            );
+
+            // Set on failed handler
             articuloProducidoTask.setOnFailed(event -> {
 //                event.getSource().getException().printStackTrace();
+                // Set error message
                 mensajeLabel.setText("Error: " + event.getSource().getException().getMessage());
             });
+
+            // Set on running handler
             articuloProducidoTask.setOnRunning(event -> {
+                // Disable table view
                 articulosTableView.setDisable(true);
+                // Show progress bar and label
                 region.setVisible(true);
                 progress.setVisible(true);
+                // Set message label
                 mensajeLabel.setText("Buscando...");
             });
+
+            // Set on succeeded handler
             articuloProducidoTask.setOnSucceeded(event -> {
+                // Create date time formatter
                 final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm:ss");
+                // Set message label
                 mensajeLabel.setText((articuloTextBox.getText().isBlank() ? "" : "\"" + articuloTextBox.getText() + "\"\n")
                         + dateTimeFormatter.format(fechaInicio) + " al " + dateTimeFormatter.format(fechaFin));
             });
+
+            // Set value property listener
             articuloProducidoTask.valueProperty().addListener((observable, oldValue, newValue) -> {
+                // Check if new value is not null and has items
                 if (newValue != null && newValue.size() > 0) {
+                    // Create observable list
                     this.articulosProducidosList = FXCollections.observableArrayList(newValue);
+                    // Set items on table view
                     articulosTableView.setItems(this.articulosProducidosList);
                 }
+                // Enable table view
                 articulosTableView.setDisable(false);
+                // Hide progress bar and label
                 region.setVisible(false);
                 progress.setVisible(false);
             });
+
+            // Create new thread
             Thread thread = new Thread(articuloProducidoTask);
+            // Set thread to daemon
             thread.setDaemon(true);
+            // Start thread
             thread.start();
         } else {
+            // Set error message if dates are incorrect
             mensajeLabel.setText("Fechas incorrectas.");
         }
     }
 
+    /**
+     * Handle actual checkbox click event.
+     * 
+     * Disable or enable the end date picker and the hour label when the checkbox is selected or deselected.
+     * 
+     * @param event the {@link ActionEvent} that triggered this method
+     */
     @FXML
     private void handleCheckBoxActual(ActionEvent event) {
         if (actualCheckBox.isSelected()) {
@@ -253,6 +326,19 @@ public class ProduccionController implements Initializable {
         }
     }
 
+    /**
+     * Handles the export button click event.
+     *
+     * This method is triggered when the export button is clicked. It initializes
+     * the start and end dates based on the user input and the state of the 
+     * "actual" checkbox. If the start date is before the end date, it creates
+     * an ExcelTask to export production data to an Excel file. The task's 
+     * success, failure, and running states are handled to provide feedback 
+     * to the user through the mensajeLabel.
+     *
+     * @param actionEvent the {@link ActionEvent} that triggered this method
+     * @throws IOException if an I/O error occurs during the export process
+     */
     @FXML
     private void handleButtonExportar(ActionEvent actionEvent) throws IOException {
         mensajeLabel.setText(null);
@@ -279,6 +365,17 @@ public class ProduccionController implements Initializable {
         }
     }
 
+    
+    /**
+     * Handles the button click event to navigate to the "Máquinas" view.
+     *
+     * This method is triggered when the "Máquinas" button is clicked. It loads the
+     * "Maquinas.fxml" file, sets a new `MaquinaController` with the selected sector
+     * from the `sectorComboBox` as its controller, and replaces the current scene
+     * with the loaded "Máquinas" view. It also sets the window title to "Máquinas".
+     *
+     * @param actionEvent the {@link ActionEvent} that triggered this method
+     */
     @FXML
     private void handleButtonMaquinas(ActionEvent actionEvent) {
         try {

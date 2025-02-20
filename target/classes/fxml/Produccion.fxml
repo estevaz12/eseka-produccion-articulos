@@ -15,22 +15,49 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane onKeyPressed="#handleEnter" prefHeight="700.0" prefWidth="1536.0" stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ar.com.leo.produccion.fx.controller.ProduccionController">
-    <children>
-      <Label fx:id="mensajeLabel" alignment="CENTER" layoutX="4.0" layoutY="467.6" prefHeight="114.0" prefWidth="441.0" textAlignment="CENTER" textFill="#007b15" wrapText="true" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="1091.0">
+<!--
+    This is the main window of the application. It contains a table view at the
+    bottom with the results of the query, and a form at the top with the following
+    fields:
+
+    - Sector: a combo box that allows the user to select a sector.
+    - Desde: a date picker that allows the user to select a date.
+    - Hasta: a date picker that allows the user to select a date.
+    - Actual: a check box that allows the user to select only the articles that
+      are currently being produced.
+    - Articulo: a text field that allows the user to enter a part of the article
+      name to search for.
+    - Mostrar tabla: a button that triggers the query to the database and
+      populates the table view with the results.
+    - Exportar: a button that triggers the export of the table view to an Excel
+      file.
+-->
+<AnchorPane onKeyPressed="#handleEnter" prefHeight="700.0" prefWidth="1536.0"
+   stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/23.0.1"
+   xmlns:fx="http://javafx.com/fxml/1"
+   fx:controller="ar.com.leo.produccion.fx.controller.ProduccionController">
+   <children>
+      <Label fx:id="mensajeLabel" alignment="CENTER" layoutX="4.0" layoutY="467.6"
+         prefHeight="114.0" prefWidth="441.0" textAlignment="CENTER" textFill="#007b15"
+         wrapText="true" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="1091.0">
          <font>
             <Font name="System Bold" size="17.0" />
          </font>
       </Label>
-        <Label layoutX="24.0" layoutY="102.0" text="Desde:">
-            <font>
-                <Font name="System Bold" size="21.0" />
-            </font>
-        </Label>
-        <TextField fx:id="articuloTextBox" layoutX="93.0" layoutY="228.0" prefHeight="46.0" prefWidth="228.0" />
-        <DatePicker fx:id="fechaInicioDatePicker" layoutX="93.0" layoutY="95.0" prefHeight="46.0" prefWidth="228.0" />
-        <DatePicker fx:id="fechaFinDatePicker" layoutX="93.0" layoutY="163.0" prefHeight="46.0" prefWidth="228.0" />
-      <Button layoutX="93.0" layoutY="305.0" mnemonicParsing="false" onAction="#handleButtonProduccion" prefHeight="65.0" prefWidth="228.0" text="Buscar" textFill="#5669f7">
+      <Label layoutX="24.0" layoutY="102.0" text="Desde:">
+         <font>
+            <Font name="System Bold" size="21.0" />
+         </font>
+      </Label>
+      <TextField fx:id="articuloTextBox" layoutX="93.0" layoutY="228.0" prefHeight="46.0"
+         prefWidth="228.0" />
+      <DatePicker fx:id="fechaInicioDatePicker" layoutX="93.0" layoutY="95.0" prefHeight="46.0"
+         prefWidth="228.0" />
+      <DatePicker fx:id="fechaFinDatePicker" layoutX="93.0" layoutY="163.0" prefHeight="46.0"
+         prefWidth="228.0" />
+      <Button layoutX="93.0" layoutY="305.0" mnemonicParsing="false"
+         onAction="#handleButtonProduccion" prefHeight="65.0" prefWidth="228.0" text="Buscar"
+         textFill="#5669f7">
          <font>
             <Font name="System Bold" size="21.0" />
          </font>
@@ -42,42 +69,50 @@
             </ImageView>
          </graphic>
       </Button>
-        <ComboBox fx:id="sectorComboBox" layoutX="93.0" layoutY="23.0" prefHeight="46.0" prefWidth="228.0" AnchorPane.topAnchor="23.0" />
-        <TableView fx:id="articulosTableView" layoutX="509.0" layoutY="6.0" prefHeight="680.0" prefWidth="1017.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="516.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-            <columns>
-                <TableColumn id="columnaArticulo" fx:id="colArticulo" editable="false" prefWidth="300.0" text="Artículo" />
-                <TableColumn fx:id="colUnidades" editable="false" prefWidth="150.0" text="Unidades" />
-                <TableColumn fx:id="colDocenas" editable="false" prefWidth="150.0" text="Docenas" />
-                <TableColumn fx:id="colProduciendo" editable="false" prefWidth="400.0" text="En producción" />
-            </columns>
+      <ComboBox fx:id="sectorComboBox" layoutX="93.0" layoutY="23.0" prefHeight="46.0"
+         prefWidth="228.0" AnchorPane.topAnchor="23.0" />
+      <TableView fx:id="articulosTableView" layoutX="509.0" layoutY="6.0" prefHeight="680.0"
+         prefWidth="1017.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="10.0"
+         AnchorPane.leftAnchor="516.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <columns>
+            <TableColumn id="columnaArticulo" fx:id="colArticulo" editable="false" prefWidth="300.0"
+               text="Artículo" />
+            <TableColumn fx:id="colUnidades" editable="false" prefWidth="150.0" text="Unidades" />
+            <TableColumn fx:id="colDocenas" editable="false" prefWidth="150.0" text="Docenas" />
+            <TableColumn fx:id="colProduciendo" editable="false" prefWidth="400.0"
+               text="En producción" />
+         </columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
-        </TableView>
-        <Label layoutX="22.0" layoutY="30.0" text="Sector:">
-            <font>
-                <Font name="System Bold" size="21.0" />
-            </font>
-        </Label>
-        <Label layoutX="29.0" layoutY="170.0" text="Hasta:">
-            <font>
-                <Font name="System Bold" size="21.0" />
-            </font>
-        </Label>
-        <Label layoutX="7.0" layoutY="235.0" text="Artículo:">
-            <font>
-                <Font name="System Bold" size="21.0" />
-            </font>
-        </Label>
-        <CheckBox fx:id="actualCheckBox" layoutX="405.0" layoutY="163.0" mnemonicParsing="false" onAction="#handleCheckBoxActual" prefHeight="46.0" prefWidth="118.0" text="Actual">
-            <font>
-                <Font name="System Bold" size="21.0" />
-            </font>
-        </CheckBox>
-        <Button layoutX="92.0" layoutY="589.6" mnemonicParsing="false" onAction="#handleButtonMaquinas" prefHeight="66.0" prefWidth="253.0" text="Ver Máquinas" textFill="#ff5454" AnchorPane.bottomAnchor="44.0" AnchorPane.leftAnchor="92.0">
-            <font>
-                <Font name="System Bold" size="21.0" />
-            </font>
+      </TableView>
+      <Label layoutX="22.0" layoutY="30.0" text="Sector:">
+         <font>
+            <Font name="System Bold" size="21.0" />
+         </font>
+      </Label>
+      <Label layoutX="29.0" layoutY="170.0" text="Hasta:">
+         <font>
+            <Font name="System Bold" size="21.0" />
+         </font>
+      </Label>
+      <Label layoutX="7.0" layoutY="235.0" text="Artículo:">
+         <font>
+            <Font name="System Bold" size="21.0" />
+         </font>
+      </Label>
+      <CheckBox fx:id="actualCheckBox" layoutX="405.0" layoutY="163.0" mnemonicParsing="false"
+         onAction="#handleCheckBoxActual" prefHeight="46.0" prefWidth="118.0" text="Actual">
+         <font>
+            <Font name="System Bold" size="21.0" />
+         </font>
+      </CheckBox>
+      <Button layoutX="92.0" layoutY="589.6" mnemonicParsing="false"
+         onAction="#handleButtonMaquinas" prefHeight="66.0" prefWidth="253.0" text="Ver Máquinas"
+         textFill="#ff5454" AnchorPane.bottomAnchor="44.0" AnchorPane.leftAnchor="92.0">
+         <font>
+            <Font name="System Bold" size="21.0" />
+         </font>
          <graphic>
             <ImageView fitHeight="47.0" fitWidth="44.0">
                <image>
@@ -85,20 +120,26 @@
                </image>
             </ImageView>
          </graphic>
-        </Button>
+      </Button>
       <Label layoutX="326.0" layoutY="95.0" prefHeight="46.0" prefWidth="85.0" text="6:00 am">
          <font>
             <Font name="System Italic" size="21.0" />
          </font>
       </Label>
-      <Label fx:id="horaLabel" layoutX="325.0" layoutY="162.0" prefHeight="46.0" prefWidth="86.0" text="6:00 am">
+      <Label fx:id="horaLabel" layoutX="325.0" layoutY="162.0" prefHeight="46.0" prefWidth="86.0"
+         text="6:00 am">
          <font>
             <Font name="System Italic" size="21.0" />
          </font>
       </Label>
-      <Region fx:id="region" layoutX="13.0" layoutY="13.0" prefHeight="713.0" prefWidth="1549.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      <ProgressIndicator fx:id="progress" layoutX="950.0" layoutY="350.0" prefHeight="500.0" prefWidth="500.0" visible="false" />
-      <Button layoutX="106.0" layoutY="394.0" mnemonicParsing="false" onAction="#handleButtonExportar" prefHeight="66.0" prefWidth="203.0" text="Exportar" textFill="#0bb711">
+      <Region fx:id="region" layoutX="13.0" layoutY="13.0" prefHeight="713.0" prefWidth="1549.0"
+         visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+         AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <ProgressIndicator fx:id="progress" layoutX="950.0" layoutY="350.0" prefHeight="500.0"
+         prefWidth="500.0" visible="false" />
+      <Button layoutX="106.0" layoutY="394.0" mnemonicParsing="false"
+         onAction="#handleButtonExportar" prefHeight="66.0" prefWidth="203.0" text="Exportar"
+         textFill="#0bb711">
          <font>
             <Font name="System Bold" size="21.0" />
          </font>
@@ -110,5 +151,5 @@
             </ImageView>
          </graphic>
       </Button>
-    </children>
+   </children>
 </AnchorPane>

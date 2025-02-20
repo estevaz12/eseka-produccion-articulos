@@ -10,20 +10,29 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1536.0" stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ar.com.leo.produccion.fx.controller.MaquinaController">
-    <children>
-        <TableView fx:id="maquinasTableView" layoutX="10.0" layoutY="125.0" prefHeight="488.0" prefWidth="1516.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="70.0">
-            <columns>
-                <TableColumn fx:id="colMaquina" editable="false" prefWidth="150.0" text="Máquina" />
-                <TableColumn fx:id="colArticulo" editable="false" prefWidth="300.0" text="Artículo" />
-                <TableColumn fx:id="colUnidades" editable="false" prefWidth="180.0" text="Un. producidas" />
-                <TableColumn fx:id="colTarget" editable="false" prefWidth="150.0" text="Target" />
-            <TableColumn fx:id="colProduccion" editable="false" prefWidth="150.0" text="\% Producido" />
+<AnchorPane prefHeight="700.0" prefWidth="1536.0" stylesheets="@../styles/styles.css"
+   xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+   fx:controller="ar.com.leo.produccion.fx.controller.MaquinaController">
+   <children>
+      <TableView fx:id="maquinasTableView" layoutX="10.0" layoutY="125.0" prefHeight="488.0"
+         prefWidth="1516.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="10.0"
+         AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="70.0">
+         <columns>
+            <TableColumn fx:id="colMaquina" editable="false" prefWidth="150.0" text="Máquina" />
+            <TableColumn fx:id="colArticulo" editable="false" prefWidth="300.0" text="Artículo" />
+            <TableColumn fx:id="colUnidades" editable="false" prefWidth="180.0"
+               text="Un. producidas" />
+            <TableColumn fx:id="colTarget" editable="false" prefWidth="150.0" text="Target" />
+            <TableColumn fx:id="colProduccion" editable="false" prefWidth="150.0"
+               text="\% Producido" />
             <TableColumn fx:id="colTiempo" editable="false" prefWidth="270.0" text="Tiempo estimado" />
             <TableColumn fx:id="colEstado" editable="false" prefWidth="230.0" text="Estado" />
-            </columns>
-        </TableView>
-      <Button layoutX="10.0" layoutY="18.0" maxHeight="55.0" maxWidth="234.0" minHeight="55.0" minWidth="210.0" mnemonicParsing="false" onAction="#handleButtonVolver" prefHeight="55.0" prefWidth="234.0" text="Volver" textFill="#911dbc" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+         </columns>
+      </TableView>
+      <Button layoutX="10.0" layoutY="18.0" maxHeight="55.0" maxWidth="234.0" minHeight="55.0"
+         minWidth="210.0" mnemonicParsing="false" onAction="#handleButtonVolver" prefHeight="55.0"
+         prefWidth="234.0" text="Volver" textFill="#911dbc" AnchorPane.leftAnchor="10.0"
+         AnchorPane.topAnchor="10.0">
          <font>
             <Font name="System Bold" size="21.0" />
          </font>
@@ -35,7 +44,10 @@
             </ImageView>
          </graphic>
       </Button>
-      <Region fx:id="region" layoutX="3.0" layoutY="3.0" prefHeight="700.0" prefWidth="1536.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      <ProgressIndicator fx:id="progress" layoutX="714.0" layoutY="350.0" prefHeight="500.0" prefWidth="500.0" visible="false" />
-    </children>
+      <Region fx:id="region" layoutX="3.0" layoutY="3.0" prefHeight="700.0" prefWidth="1536.0"
+         visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+         AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <ProgressIndicator fx:id="progress" layoutX="714.0" layoutY="350.0" prefHeight="500.0"
+         prefWidth="500.0" visible="false" />
+   </children>
 </AnchorPane>
