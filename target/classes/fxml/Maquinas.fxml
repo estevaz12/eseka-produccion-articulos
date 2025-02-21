@@ -4,6 +4,7 @@
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -29,6 +30,13 @@
             <TableColumn fx:id="colEstado" editable="false" prefWidth="230.0" text="Estado" />
          </columns>
       </TableView>
+      <TextArea fx:id="logTextArea" editable="false" layoutX="1020.0" layoutY="7.2"
+         prefHeight="58.0" prefWidth="250.0" AnchorPane.leftAnchor="1020.0"
+         AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="7.0">
+         <font>
+            <Font name="System Italic" size="14.0" />
+         </font>
+      </TextArea>
       <Button layoutX="10.0" layoutY="18.0" maxHeight="55.0" maxWidth="234.0" minHeight="55.0"
          minWidth="210.0" mnemonicParsing="false" onAction="#handleButtonVolver" prefHeight="55.0"
          prefWidth="234.0" text="Volver" textFill="#911dbc" AnchorPane.leftAnchor="10.0"
@@ -43,6 +51,19 @@
                </image>
             </ImageView>
          </graphic>
+      </Button>
+      <Button layoutX="916.0" layoutY="6.0" mnemonicParsing="false" onAction="#imprimir"
+         prefHeight="58.0" prefWidth="98.0">
+         <graphic>
+            <ImageView fitHeight="48.0" fitWidth="61.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/print.png" />
+               </image>
+            </ImageView>
+         </graphic>
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
       </Button>
       <Region fx:id="region" layoutX="3.0" layoutY="3.0" prefHeight="700.0" prefWidth="1536.0"
          visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"

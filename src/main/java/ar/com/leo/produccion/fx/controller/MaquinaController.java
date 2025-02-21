@@ -11,15 +11,22 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.print.PageLayout;
+import javafx.print.PageOrientation;
+import javafx.print.Paper;
+import javafx.print.Printer;
+import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
+import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -31,6 +38,8 @@ public class MaquinaController implements Initializable {
 
     @FXML
     private TableView<Maquina> maquinasTableView;
+    @FXML
+    private TextArea logTextArea;
     @FXML
     private TableColumn<Maquina, Integer> colMaquina;
     @FXML
@@ -285,6 +294,76 @@ public class MaquinaController implements Initializable {
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void imprimir(ActionEvent event) {
+
+        if (maquinasTableView.getItems().size() > 0) {
+            // Create a PrinterJob
+            final PrinterJob job = PrinterJob.createPrinterJob();
+            if (job == null) {
+                logTextArea.setStyle("-fx-text-fill: red;");
+                logTextArea.setText("No se encontraron impresoras.\n");
+                return;
+            }
+
+            // Get the default printer
+            final Printer printer = Printer.getDefaultPrinter();
+
+            // Customize the page layout
+            final PageLayout pageLayout = printer.createPageLayout(
+                    Paper.A4, // Default paper size
+                    PageOrientation.LANDSCAPE, // Set orientation (PORTRAIT or LANDSCAPE)
+                    Printer.MarginType.HARDWARE_MINIMUM // Set to minimum margins
+            );
+
+            // Display the print dialog to allow users to choose settings
+            boolean proceed = job.showPrintDialog(maquinasTableView.getScene().getWindow());
+            if (!proceed) {
+                return;
+            }
+
+            // Set the job's page layout
+            job.getJobSettings().setPageLayout(pageLayout);
+
+            // Create a label to show the date at the bottom
+//            Label dateLabel = new Label(formatter.format(LocalDateTime.now()));
+//            dateLabel.setStyle("-fx-font-size: 10px; -fx-alignment: center;");
+//            dateLabel.setPrefWidth(pageLayout.getPrintableWidth());
+//            dateLabel.setPadding(new Insets(50, 0, 0, 0));
+
+            // Combine the table and the date
+//            VBox printableContent = new VBox(maquinasTableView, dateLabel);
+//            printableContent.setPrefHeight(pageLayout.getPrintableHeight());
+//            printableContent.setPrefWidth(pageLayout.getPrintableWidth());
+////            printableContent.setAutoSizeChildren(false);
+//            printableContent.setAlignment(Pos.CENTER);
+
+            // Calculate the scale factor to fit the TableView to the page
+            double scaleX = pageLayout.getPrintableWidth() / maquinasTableView.getBoundsInParent().getWidth();
+            double scaleY = pageLayout.getPrintableHeight() / maquinasTableView.getBoundsInParent().getHeight();
+            double scale = Math.min(scaleX, scaleY);
+
+            // Apply the scaling transformation
+            Scale scaleTransform = new Scale(scale, scale);
+            maquinasTableView.getTransforms().add(scaleTransform);
+
+            // Print the table
+            boolean success = job.printPage(pageLayout, maquinasTableView);
+
+            // Reset the table's transformations and height
+            maquinasTableView.getTransforms().remove(scaleTransform);
+            if (success) {
+                job.endJob();
+            } else {
+                logTextArea.setStyle("-fx-text-fill: red;");
+                logTextArea.setText("Error al imprimir.\n");
+            }
+        } else {
+            logTextArea.setStyle("-fx-text-fill: red;");
+            logTextArea.setText("No hay ninguna tabla para imprimir.\n");
         }
     }
 
