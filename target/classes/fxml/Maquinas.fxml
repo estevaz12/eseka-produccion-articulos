@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="700.0" prefWidth="1536.0" stylesheets="@../styles/styles.css"
-   xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+   xmlns="http://javafx.com/javafx/21.0.6" xmlns:fx="http://javafx.com/fxml/1"
    fx:controller="ar.com.leo.produccion.fx.controller.MaquinaController">
    <children>
       <TableView fx:id="maquinasTableView" layoutX="10.0" layoutY="125.0" prefHeight="488.0"
