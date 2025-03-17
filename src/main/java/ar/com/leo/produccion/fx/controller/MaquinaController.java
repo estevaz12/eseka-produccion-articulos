@@ -16,6 +16,11 @@ import javafx.print.PageOrientation;
 import javafx.print.Paper;
 import javafx.print.Printer;
 import javafx.print.PrinterJob;
+import javafx.print.PageLayout;
+import javafx.print.PageOrientation;
+import javafx.print.Paper;
+import javafx.print.Printer;
+import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ProgressIndicator;
@@ -23,9 +28,11 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
+import javafx.scene.transform.Scale;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 
@@ -36,6 +43,8 @@ import java.util.ResourceBundle;
 
 public class MaquinaController implements Initializable {
 
+    @FXML
+    private TextArea logTextArea;
     @FXML
     private TableView<Maquina> maquinasTableView;
     @FXML
