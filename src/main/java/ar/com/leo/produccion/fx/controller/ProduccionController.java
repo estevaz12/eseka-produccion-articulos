@@ -183,9 +183,6 @@ public class ProduccionController implements Initializable {
     }
 
     private void mostrarTablaArticulos() {
-        // articulosProducidosList = FXCollections.observableArrayList();
-        // articulosTableView.setItems(null);
-
         LocalDateTime fechaInicio;
         LocalDateTime fechaFin;
 
