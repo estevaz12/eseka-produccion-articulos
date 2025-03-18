@@ -10,6 +10,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.control.TextField?>
+
 
 <AnchorPane prefHeight="700.0" prefWidth="1536.0" stylesheets="@../styles/styles.css"
    xmlns="http://javafx.com/javafx/21.0.6" xmlns:fx="http://javafx.com/fxml/1"
@@ -52,6 +54,12 @@
             </ImageView>
          </graphic>
       </Button>
+      <TextField fx:id="buscador" layoutX="608.0" layoutY="6.0" onKeyTyped="#buscarArticulo"
+         prefHeight="31.0" prefWidth="301.0" promptText="Buscar artículo...">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </TextField>
       <Button layoutX="916.0" layoutY="6.0" mnemonicParsing="false" onAction="#imprimir"
          prefHeight="58.0" prefWidth="98.0">
          <graphic>

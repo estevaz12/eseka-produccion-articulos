@@ -23,7 +23,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.scene.transform.Scale;
@@ -58,6 +60,8 @@ public class MaquinaController implements Initializable {
     private Region region;
     @FXML
     private ProgressIndicator progress;
+    @FXML
+    private TextField buscador;
 
     private ObservableList<Maquina> maquinasList;
     private MaquinaTask maquinaTask;
@@ -364,6 +368,28 @@ public class MaquinaController implements Initializable {
         } else {
             logTextArea.setStyle("-fx-text-fill: red;");
             logTextArea.setText("No hay ninguna tabla para imprimir.\n");
+        }
+    }
+
+    @FXML
+    public void buscarArticulo(KeyEvent event) {
+        filtrar(buscador);
+    }
+
+    private void filtrar(TextField buscador) {
+        if (!buscador.getText().isBlank()) {
+            // Filter the data based on the input
+            final ObservableList<Maquina> filteredData = FXCollections.observableArrayList();
+            for (Maquina maquina : this.maquinasList) {
+                if (maquina.getStyleCode() != null 
+                    && (maquina.getStyleCode()).contains(buscador.getText())) {
+                    filteredData.add(maquina);
+                }
+            }
+            // Update the table with the filtered data
+            maquinasTableView.setItems(filteredData);
+        }  else {
+            maquinasTableView.setItems(this.maquinasList);
         }
     }
 
