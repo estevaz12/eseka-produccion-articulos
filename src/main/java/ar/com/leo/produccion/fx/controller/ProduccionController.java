@@ -204,10 +204,6 @@ public class ProduccionController implements Initializable {
     }
 
     private void mostrarTablaArticulos() {
-        // Clear table view items
-        articulosTableView.setItems(null);
-
-        // Get dates from date picker
         LocalDateTime fechaInicio;
         LocalDateTime fechaFin;
 
