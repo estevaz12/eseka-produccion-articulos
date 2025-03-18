@@ -242,17 +242,19 @@ public class MaquinaController implements Initializable {
                             style += "-fx-font-weight: bold;";
                         }
 
-                        if (maquina.getState() == 8 || maquina.getState() == 13)
+                        if (maquina.getState() == 8) // produccion
                             style += "-fx-text-background-color: white;-fx-background-color: #9b0000;";
-                        else if (maquina.getState() == 6 || maquina.getState() == 7)
+                        else if(maquina.getState() == 13) // turbina
+                            style += "-fx-text-background-color: black;-fx-background-color: #00ffee;";
+                        else if (maquina.getState() == 6 || maquina.getState() == 7) // mecanico / electronico
                             style += "-fx-background-color: #ff0000;";
-                        else if (maquina.getState() == 1 || maquina.getState() == 56 || maquina.getState() == 65535)
+                        else if (maquina.getState() == 1 || maquina.getState() == 56 || maquina.getState() == 65535) // offline
                             style += "-fx-background-color: #8d8d8d;";
-                        else if (maquina.getState() == 9 || maquina.getState() == 10)
+                        else if (maquina.getState() == 9 || maquina.getState() == 10) // falta hilado / repuesto
                             style += "-fx-background-color: #dcd900;";
-                        else {
+                        else { // llegó al target
                             if (maquina.getProduccion() >= 100) {
-                                style += "-fx-background-color: #be16d5;";
+                                style += "-fx-background-color: #77ff00;";
                             }
                         }
                     }
