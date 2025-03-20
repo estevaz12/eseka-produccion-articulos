@@ -117,8 +117,8 @@
             <Font name="System Bold" size="21.0" />
          </font>
       </CheckBox>
-      <Button layoutX="92.0" layoutY="589.6" mnemonicParsing="false"
-         onAction="#handleButtonMaquinas" prefHeight="66.0" prefWidth="253.0" text="Ver Máquinas"
+      <Button layoutX="93.0" layoutY="589.6" mnemonicParsing="false"
+         onAction="#handleButtonMaquinas" prefHeight="66.0" prefWidth="303.0" text="Ver Máquinas"
          textFill="#ff5454" AnchorPane.bottomAnchor="44.0" AnchorPane.leftAnchor="92.0">
          <font>
             <Font name="System Bold" size="21.0" />
@@ -147,8 +147,8 @@
          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <ProgressIndicator fx:id="progress" layoutX="950.0" layoutY="350.0" prefHeight="500.0"
          prefWidth="500.0" visible="false" />
-      <Button layoutX="53.0" layoutY="394.0" mnemonicParsing="false"
-         onAction="#handleButtonExportar" prefHeight="66.0" prefWidth="203.0" text="Exportar"
+      <Button layoutX="93.0" layoutY="394.0" mnemonicParsing="false"
+         onAction="#handleButtonExportar" prefHeight="65.0" prefWidth="228.0" text="Exportar"
          textFill="#0bb711">
          <font>
             <Font name="System Bold" size="21.0" />
@@ -161,8 +161,8 @@
             </ImageView>
          </graphic>
       </Button>
-      <Button layoutX="170.0" layoutY="394.0" mnemonicParsing="false" onAction="#imprimir"
-         prefHeight="58.0" prefWidth="98.0">
+      <Button layoutX="330.0" layoutY="394.0" mnemonicParsing="false" onAction="#imprimir"
+         prefHeight="65.0" prefWidth="65.0">
          <graphic>
             <ImageView fitHeight="48.0" fitWidth="61.0" pickOnBounds="true" preserveRatio="true">
                <image>
