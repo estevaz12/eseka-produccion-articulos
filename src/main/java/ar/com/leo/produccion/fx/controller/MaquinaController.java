@@ -73,6 +73,7 @@ public class MaquinaController implements Initializable {
         this.roomCode = roomCode;
     }
 
+    // TODO: Cambiar Un. producidas y target a docenas con tooltip a unidades
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         if (DataSourceConfig.dataSource == null) {
