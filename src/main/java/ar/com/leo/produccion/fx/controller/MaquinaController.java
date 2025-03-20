@@ -75,7 +75,6 @@ public class MaquinaController implements Initializable {
 
     // TODO: Actualizar ESTADO para que sea más entendible
     // TODO: Añadir tooltip para docenas en producido y target
-    // TODO: Añadir boton de refresh
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         if (DataSourceConfig.dataSource == null) {

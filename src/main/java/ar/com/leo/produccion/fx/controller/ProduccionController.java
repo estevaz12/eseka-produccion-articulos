@@ -11,6 +11,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.print.PageLayout;
+import javafx.print.PageOrientation;
+import javafx.print.Paper;
+import javafx.print.Printer;
+import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -19,6 +24,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
+import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -73,7 +79,6 @@ public class ProduccionController implements Initializable {
 
 
     // TODO: Añadir botón de impresión
-    // TODO: Añadir botón de refresh
 
     /**
      * Initializes the controller after its root element has been completely processed.
@@ -364,6 +369,77 @@ public class ProduccionController implements Initializable {
             thread.start();
         }
     }
+
+    @FXML
+    public void imprimir(ActionEvent event) {
+
+        if (articulosTableView.getItems().size() > 0) {
+            // Create a PrinterJob
+            final PrinterJob job = PrinterJob.createPrinterJob();
+            if (job == null) {
+                mensajeLabel.setStyle("-fx-text-fill: red;");
+                mensajeLabel.setText("No se encontraron impresoras.\n");
+                return;
+            }
+
+            // Get the default printer
+            final Printer printer = Printer.getDefaultPrinter();
+
+            // Customize the page layout
+            final PageLayout pageLayout = printer.createPageLayout(
+                    Paper.A4, // Default paper size
+                    PageOrientation.LANDSCAPE, // Set orientation (PORTRAIT or LANDSCAPE)
+                    Printer.MarginType.HARDWARE_MINIMUM // Set to minimum margins
+            );
+
+            // Display the print dialog to allow users to choose settings
+            boolean proceed = job.showPrintDialog(articulosTableView.getScene().getWindow());
+            if (!proceed) {
+                return;
+            }
+
+            // Set the job's page layout
+            job.getJobSettings().setPageLayout(pageLayout);
+
+            // Create a label to show the date at the bottom
+//            Label dateLabel = new Label(formatter.format(LocalDateTime.now()));
+//            dateLabel.setStyle("-fx-font-size: 10px; -fx-alignment: center;");
+//            dateLabel.setPrefWidth(pageLayout.getPrintableWidth());
+//            dateLabel.setPadding(new Insets(50, 0, 0, 0));
+
+            // Combine the table and the date
+//            VBox printableContent = new VBox(articulosTableView, dateLabel);
+//            printableContent.setPrefHeight(pageLayout.getPrintableHeight());
+//            printableContent.setPrefWidth(pageLayout.getPrintableWidth());
+////            printableContent.setAutoSizeChildren(false);
+//            printableContent.setAlignment(Pos.CENTER);
+
+            // Calculate the scale factor to fit the TableView to the page
+            double scaleX = pageLayout.getPrintableWidth() / articulosTableView.getBoundsInParent().getWidth();
+            double scaleY = pageLayout.getPrintableHeight() / articulosTableView.getBoundsInParent().getHeight();
+            double scale = Math.min(scaleX, scaleY);
+
+            // Apply the scaling transformation
+            Scale scaleTransform = new Scale(scale, scale);
+            articulosTableView.getTransforms().add(scaleTransform);
+
+            // Print the table
+            boolean success = job.printPage(pageLayout, articulosTableView);
+
+            // Reset the table's transformations and height
+            articulosTableView.getTransforms().remove(scaleTransform);
+            if (success) {
+                job.endJob();
+            } else {
+                mensajeLabel.setStyle("-fx-text-fill: red;");
+                mensajeLabel.setText("Error al imprimir.\n");
+            }
+        } else {
+            mensajeLabel.setStyle("-fx-text-fill: red;");
+            mensajeLabel.setText("No hay ninguna tabla para imprimir.\n");
+        }
+    }
+
 
     
     /**
