@@ -77,9 +77,6 @@ public class ProduccionController implements Initializable {
     final DateTimeFormatter fromDateFormatter = DateTimeFormatter.ofPattern("[dd/MM/yyyy][dd/M/yyyy][dd/M/yy][dd/MM/yy][dd-MM-yyyy][dd-MM-yy][ddMMyyyy][ddMMyy][ddMyy]");
     final DateTimeFormatter toDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-
-    // TODO: Añadir botón de impresión
-
     /**
      * Initializes the controller after its root element has been completely processed.
      * Sets an error message if the database is not initialized, otherwise proceeds with initialization.

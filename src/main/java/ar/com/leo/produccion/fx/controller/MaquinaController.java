@@ -141,13 +141,13 @@ public class MaquinaController implements Initializable {
                 SimpleStringProperty estado = new SimpleStringProperty();
                 switch (param.getValue().getState()) {
                     case 0:
-                        estado.set("RUN");
+                        estado.set("TEJIENDO");
                         break;
                     case 1:
                         estado.set("OFF");
                         break;
                     case 2:
-                        estado.set("GENERAL STOP");
+                        estado.set("STOP GENERAL");
                         break;
                     case 3:
                         estado.set("STOP ERROR");
@@ -165,7 +165,7 @@ public class MaquinaController implements Initializable {
                         estado.set("MECANICO");
                         break;
                     case 8:
-                        estado.set("PRODUCCION");
+                        estado.set("STOP PRODUCCION");
                         break;
                     case 9:
                         estado.set("FALTA HILADO");
