@@ -54,6 +54,20 @@
             </ImageView>
          </graphic>
       </Button>
+
+      <Button layoutX="254.0" layoutY="18.0" mnemonicParsing="false"
+         onAction="#handleButtonRefresh" prefHeight="55.0" prefWidth="55.0"
+         AnchorPane.leftAnchor="254.0"
+         AnchorPane.topAnchor="10.0">
+         <graphic>
+            <ImageView fitHeight="45.0" fitWidth="45.0">
+               <image>
+                  <Image url="@../images/refresh.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+
       <TextField fx:id="buscador" layoutX="608.0" layoutY="6.0" onKeyTyped="#buscarArticulo"
          prefHeight="31.0" prefWidth="301.0" promptText="Buscar artículo...">
          <font>

@@ -291,6 +291,11 @@ public class MaquinaController implements Initializable {
     }
 
     @FXML
+    private void handleButtonRefresh(ActionEvent actionEvent) {
+        this.mostrarTablaMaquinas(roomCode);
+    }
+
+    @FXML
     private void handleButtonVolver(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Produccion.fxml"));

@@ -69,6 +69,16 @@
             </ImageView>
          </graphic>
       </Button>
+      <Button layoutX="330.0" layoutY="305.0" mnemonicParsing="false"
+         onAction="#handleButtonProduccion" prefHeight="65.0" prefWidth="65.0">
+         <graphic>
+            <ImageView fitHeight="34.0" fitWidth="43.0">
+               <image>
+                  <Image url="@../images/refresh.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
       <ComboBox fx:id="sectorComboBox" layoutX="93.0" layoutY="23.0" prefHeight="46.0"
          prefWidth="228.0" AnchorPane.topAnchor="23.0" />
       <TableView fx:id="articulosTableView" layoutX="509.0" layoutY="6.0" prefHeight="680.0"
