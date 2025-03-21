@@ -5,6 +5,7 @@ import ar.com.leo.produccion.jdbc.DataSourceConfig;
 import ar.com.leo.produccion.model.Maquina;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -50,11 +51,11 @@ public class MaquinaController implements Initializable {
     @FXML
     private TableColumn<Maquina, String> colArticulo;
     @FXML
-    private TableColumn<Maquina, Integer> colUnidades;
+    private TableColumn<Maquina, Double> colDocenas;
     @FXML
     private TableColumn<Maquina, String> colProduccion;
     @FXML
-    private TableColumn<Maquina, Integer> colTarget;
+    private TableColumn<Maquina, Double> colTarget;
     @FXML
     private TableColumn<Maquina, String> colTiempo;
     @FXML
@@ -75,8 +76,7 @@ public class MaquinaController implements Initializable {
     public MaquinaController(String roomCode) {
         this.roomCode = roomCode;
     }
-
-    // TODO: Cambiar Un. producidas y target a docenas con tooltip a unidades
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         if (DataSourceConfig.dataSource == null) {
@@ -115,14 +115,21 @@ public class MaquinaController implements Initializable {
 
                 return articulo;
             });
-            colUnidades.setCellValueFactory(new PropertyValueFactory<>("pieces"));
-            // add tooltip to cell over hover
-            colUnidades.setCellFactory(new Callback<>() {
+
+            colDocenas.setCellValueFactory(param -> {
+                SimpleDoubleProperty docenas = new SimpleDoubleProperty();
+                Maquina maquina = param.getValue();
+                if (maquina != null) {
+                    docenas.set((double) maquina.getPieces() / 24);
+                }
+                return docenas.asObject();
+            });
+            colDocenas.setCellFactory(new Callback<>() {
                 @Override
-                public TableCell<Maquina, Integer> call(TableColumn<Maquina, Integer> param) {
+                public TableCell<Maquina, Double> call(TableColumn<Maquina, Double> param) {
                     return new TableCell<>() {
                         @Override
-                        public void updateItem(Integer item, boolean empty) {
+                        public void updateItem(Double item, boolean empty) {
                             super.updateItem(item, empty);
                             if (item == null || empty) {
                                 setText(null);
@@ -131,19 +138,9 @@ public class MaquinaController implements Initializable {
                                 // Get the current Maquina item
                                 final Maquina maquina = getTableRow().getItem();
                                 if (maquina != null) {
-                                    setText(item.toString());
-
-                                    int divisor = 0;
-                                    switch (MaquinaController.this.roomCode) {
-                                        case "HOMBRE":
-                                            divisor = 24;
-                                            break;
-                                        default:
-                                            divisor = 12;
-                                    }
-
-                                    final int doc = maquina.getPieces() / divisor;
-                                    final Tooltip tooltip = new Tooltip(doc + " doc.");
+                                    setText(String.format("%.1f", item));
+                                    final int pieces = maquina.getPieces();
+                                    final Tooltip tooltip = new Tooltip(pieces + " un.");
                                     
                                     javafx.util.Duration duration = javafx.util.Duration.millis(100);
                                     tooltip.setShowDelay(duration);
@@ -155,13 +152,20 @@ public class MaquinaController implements Initializable {
                 }
             });
             
-            colTarget.setCellValueFactory(new PropertyValueFactory<>("targetOrder"));
+            colTarget.setCellValueFactory(param -> {
+                SimpleDoubleProperty target = new SimpleDoubleProperty();
+                Maquina maquina = param.getValue();
+                if (maquina != null) {
+                    target.set((double) maquina.getTargetOrder() / 24);
+                }
+                return target.asObject();
+            });
             colTarget.setCellFactory(new Callback<>() {
                 @Override
-                public TableCell<Maquina, Integer> call(TableColumn<Maquina, Integer> param) {
+                public TableCell<Maquina, Double> call(TableColumn<Maquina, Double> param) {
                     return new TableCell<>() {
                         @Override
-                        public void updateItem(Integer item, boolean empty) {
+                        public void updateItem(Double item, boolean empty) {
                             super.updateItem(item, empty);
                             if (item == null || empty) {
                                 setText(null);
@@ -170,19 +174,9 @@ public class MaquinaController implements Initializable {
                                 // Get the current Maquina item
                                 final Maquina maquina = getTableRow().getItem();
                                 if (maquina != null) {
-                                    setText(item.toString());
-
-                                    int divisor = 0;
-                                    switch (MaquinaController.this.roomCode) {
-                                        case "HOMBRE":
-                                            divisor = 24;
-                                            break;
-                                        default:
-                                            divisor = 12;
-                                    }
-
-                                    final int doc = maquina.getTargetOrder() / divisor;
-                                    final Tooltip tooltip = new Tooltip(doc + " doc.");
+                                    setText(String.format("%.1f", item));
+                                    final int targetOrder = maquina.getTargetOrder();
+                                    final Tooltip tooltip = new Tooltip(targetOrder + " un.");
                                     
                                     javafx.util.Duration duration = javafx.util.Duration.millis(100);
                                     tooltip.setShowDelay(duration);
