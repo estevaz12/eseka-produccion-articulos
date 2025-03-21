@@ -18,18 +18,21 @@ import javafx.print.Printer;
 import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.net.URL;
 import java.time.Duration;
@@ -73,8 +76,6 @@ public class MaquinaController implements Initializable {
         this.roomCode = roomCode;
     }
 
-    // TODO: Actualizar ESTADO para que sea más entendible
-    // TODO: Añadir tooltip para docenas en producido y target
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         if (DataSourceConfig.dataSource == null) {
@@ -114,7 +115,84 @@ public class MaquinaController implements Initializable {
                 return articulo;
             });
             colUnidades.setCellValueFactory(new PropertyValueFactory<>("pieces"));
+            // add tooltip to cell over hover
+            colUnidades.setCellFactory(new Callback<>() {
+                @Override
+                public TableCell<Maquina, Integer> call(TableColumn<Maquina, Integer> param) {
+                    return new TableCell<>() {
+                        @Override
+                        public void updateItem(Integer item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (item == null || empty) {
+                                setText(null);
+                                setTooltip(null);
+                            } else {
+                                // Get the current Maquina item
+                                final Maquina maquina = getTableRow().getItem();
+                                if (maquina != null) {
+                                    setText(item.toString());
+
+                                    int divisor = 0;
+                                    switch (MaquinaController.this.roomCode) {
+                                        case "HOMBRE":
+                                            divisor = 24;
+                                            break;
+                                        default:
+                                            divisor = 12;
+                                    }
+
+                                    final int doc = maquina.getPieces() / divisor;
+                                    final Tooltip tooltip = new Tooltip(doc + " doc.");
+                                    
+                                    javafx.util.Duration duration = javafx.util.Duration.millis(100);
+                                    tooltip.setShowDelay(duration);
+                                    setTooltip(tooltip);
+                                }
+                            }
+                        }
+                    };
+                }
+            });
+            
             colTarget.setCellValueFactory(new PropertyValueFactory<>("targetOrder"));
+            colTarget.setCellFactory(new Callback<>() {
+                @Override
+                public TableCell<Maquina, Integer> call(TableColumn<Maquina, Integer> param) {
+                    return new TableCell<>() {
+                        @Override
+                        public void updateItem(Integer item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (item == null || empty) {
+                                setText(null);
+                                setTooltip(null);
+                            } else {
+                                // Get the current Maquina item
+                                final Maquina maquina = getTableRow().getItem();
+                                if (maquina != null) {
+                                    setText(item.toString());
+
+                                    int divisor = 0;
+                                    switch (MaquinaController.this.roomCode) {
+                                        case "HOMBRE":
+                                            divisor = 24;
+                                            break;
+                                        default:
+                                            divisor = 12;
+                                    }
+
+                                    final int doc = maquina.getTargetOrder() / divisor;
+                                    final Tooltip tooltip = new Tooltip(doc + " doc.");
+                                    
+                                    javafx.util.Duration duration = javafx.util.Duration.millis(100);
+                                    tooltip.setShowDelay(duration);
+                                    setTooltip(tooltip);
+                                }
+                            }
+                        }
+                    };
+                }
+            });
+
             colProduccion.setCellValueFactory(param -> {
                 SimpleStringProperty produccion = new SimpleStringProperty();
                 produccion.set(param.getValue().getProduccion() + "%");
