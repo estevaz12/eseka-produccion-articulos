@@ -11,6 +11,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.print.PageLayout;
+import javafx.print.PageOrientation;
+import javafx.print.Paper;
+import javafx.print.Printer;
+import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -19,6 +24,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
+import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -360,6 +366,63 @@ public class ProduccionController implements Initializable {
             thread.start();
         }
     }
+
+    @FXML
+    public void imprimir(ActionEvent event) {
+        // Create a PrinterJob
+        final PrinterJob job = PrinterJob.createPrinterJob();
+        if (job == null) {
+            mensajeLabel.setStyle("-fx-text-fill: red;");
+            mensajeLabel.setText("No se encontraron impresoras.\n");
+            return;
+        }
+    
+        // Get the default printer
+        final Printer printer = Printer.getDefaultPrinter();
+    
+        // Customize the page layout
+        final PageLayout pageLayout = printer.createPageLayout(
+                Paper.A4, // Default paper size
+                PageOrientation.LANDSCAPE, // Set orientation (PORTRAIT or LANDSCAPE)
+                Printer.MarginType.HARDWARE_MINIMUM // Set to minimum margins
+        );
+    
+        // Display the print dialog to allow users to choose settings
+        boolean proceed = job.showPrintDialog(articulosTableView.getScene().getWindow());
+        if (!proceed) {
+            return;
+        }
+    
+        // Set the job's page layout
+        job.getJobSettings().setPageLayout(pageLayout);
+    
+        // Calculate the scale factor to fit the view to the page
+        Node root = articulosTableView.getScene().getRoot(); // Get the root node
+        double scaleX = pageLayout.getPrintableWidth() / root.getBoundsInParent().getWidth();
+        double scaleY = pageLayout.getPrintableHeight() / root.getBoundsInParent().getHeight();
+        double scale = Math.min(scaleX, scaleY);
+    
+        // Create a new Scale object
+        Scale scaleTransform = new Scale(scale, scale);
+    
+        // Apply the scaling transformation
+        root.getTransforms().add(scaleTransform);
+    
+        // Print the whole view
+        boolean success = job.printPage(pageLayout, root);
+    
+        // Remove the scaling transformation
+        root.getTransforms().remove(scaleTransform);
+    
+        // End the job
+        if (success) {
+            job.endJob();
+        } else {
+            mensajeLabel.setStyle("-fx-text-fill: red;");
+            mensajeLabel.setText("Error al imprimir.\n");
+        }
+    }
+
 
     
     /**

@@ -18,18 +18,21 @@ import javafx.print.Printer;
 import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.net.URL;
 import java.time.Duration;
@@ -113,7 +116,84 @@ public class MaquinaController implements Initializable {
                 return articulo;
             });
             colUnidades.setCellValueFactory(new PropertyValueFactory<>("pieces"));
+            // add tooltip to cell over hover
+            colUnidades.setCellFactory(new Callback<>() {
+                @Override
+                public TableCell<Maquina, Integer> call(TableColumn<Maquina, Integer> param) {
+                    return new TableCell<>() {
+                        @Override
+                        public void updateItem(Integer item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (item == null || empty) {
+                                setText(null);
+                                setTooltip(null);
+                            } else {
+                                // Get the current Maquina item
+                                final Maquina maquina = getTableRow().getItem();
+                                if (maquina != null) {
+                                    setText(item.toString());
+
+                                    int divisor = 0;
+                                    switch (MaquinaController.this.roomCode) {
+                                        case "HOMBRE":
+                                            divisor = 24;
+                                            break;
+                                        default:
+                                            divisor = 12;
+                                    }
+
+                                    final int doc = maquina.getPieces() / divisor;
+                                    final Tooltip tooltip = new Tooltip(doc + " doc.");
+                                    
+                                    javafx.util.Duration duration = javafx.util.Duration.millis(100);
+                                    tooltip.setShowDelay(duration);
+                                    setTooltip(tooltip);
+                                }
+                            }
+                        }
+                    };
+                }
+            });
+            
             colTarget.setCellValueFactory(new PropertyValueFactory<>("targetOrder"));
+            colTarget.setCellFactory(new Callback<>() {
+                @Override
+                public TableCell<Maquina, Integer> call(TableColumn<Maquina, Integer> param) {
+                    return new TableCell<>() {
+                        @Override
+                        public void updateItem(Integer item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (item == null || empty) {
+                                setText(null);
+                                setTooltip(null);
+                            } else {
+                                // Get the current Maquina item
+                                final Maquina maquina = getTableRow().getItem();
+                                if (maquina != null) {
+                                    setText(item.toString());
+
+                                    int divisor = 0;
+                                    switch (MaquinaController.this.roomCode) {
+                                        case "HOMBRE":
+                                            divisor = 24;
+                                            break;
+                                        default:
+                                            divisor = 12;
+                                    }
+
+                                    final int doc = maquina.getTargetOrder() / divisor;
+                                    final Tooltip tooltip = new Tooltip(doc + " doc.");
+                                    
+                                    javafx.util.Duration duration = javafx.util.Duration.millis(100);
+                                    tooltip.setShowDelay(duration);
+                                    setTooltip(tooltip);
+                                }
+                            }
+                        }
+                    };
+                }
+            });
+
             colProduccion.setCellValueFactory(param -> {
                 SimpleStringProperty produccion = new SimpleStringProperty();
                 produccion.set(param.getValue().getProduccion() + "%");
@@ -140,13 +220,13 @@ public class MaquinaController implements Initializable {
                 SimpleStringProperty estado = new SimpleStringProperty();
                 switch (param.getValue().getState()) {
                     case 0:
-                        estado.set("RUN");
+                        estado.set("TEJIENDO");
                         break;
                     case 1:
                         estado.set("OFF");
                         break;
                     case 2:
-                        estado.set("GENERAL STOP");
+                        estado.set("STOP GENERAL");
                         break;
                     case 3:
                         estado.set("STOP ERROR");
@@ -164,7 +244,7 @@ public class MaquinaController implements Initializable {
                         estado.set("MECANICO");
                         break;
                     case 8:
-                        estado.set("PRODUCCION");
+                        estado.set("STOP PRODUCCION");
                         break;
                     case 9:
                         estado.set("FALTA HILADO");
@@ -286,6 +366,11 @@ public class MaquinaController implements Initializable {
         Thread thread = new Thread(maquinaTask);
         thread.setDaemon(true);
         thread.start();
+    }
+
+    @FXML
+    private void handleButtonRefresh(ActionEvent actionEvent) {
+        this.mostrarTablaMaquinas(roomCode);
     }
 
     @FXML
