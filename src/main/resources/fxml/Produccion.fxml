@@ -32,6 +32,8 @@
     - Exportar: a button that triggers the export of the table view to an Excel
       file.
 -->
+
+<!-- TODO: Description on top of table needs to show properly -->
 <AnchorPane onKeyPressed="#handleEnter" prefHeight="700.0" prefWidth="1536.0"
    stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/21.0.6"
    xmlns:fx="http://javafx.com/fxml/1"
@@ -133,7 +135,8 @@
          </graphic>
       </Button>
       <Button layoutX="93.0" layoutY="589.6" mnemonicParsing="false"
-         onAction="#handleButtonMaquinas" prefHeight="66.0" prefWidth="303.0" text="Con Programada"
+         onAction="#handleButtonProgramada" prefHeight="66.0" prefWidth="303.0"
+         text="Con Programada"
          textFill="black" AnchorPane.bottomAnchor="44.0" AnchorPane.leftAnchor="92.0">
          <font>
             <Font name="System Bold" size="21.0" />

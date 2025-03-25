@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane minHeight="318.0" minWidth="500.0" prefHeight="762.0" prefWidth="1275.0"
+   xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+   fx:controller="ar.com.leo.produccion.fx.controller.ProgramadaController">
+   <children>
+      <TableView fx:id="articulosTableView" layoutX="9.0" layoutY="68.0" prefHeight="646.0"
+         prefWidth="1262.0" stylesheets="@../styles/programada.css" tableMenuButtonVisible="true"
+         AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0"
+         AnchorPane.topAnchor="68.0">
+         <columns>
+            <TableColumn fx:id="colArticulo" editable="false" minWidth="50.0" prefWidth="150.0"
+               text="Artículo" />
+            <TableColumn fx:id="colTalle" editable="false" minWidth="50.0" prefWidth="100.0"
+               text="Talle" />
+            <TableColumn fx:id="colProducir" editable="false" minWidth="50.0" prefWidth="150.0"
+               text="A Producir" />
+            <TableColumn fx:id="colProducido" editable="false" minWidth="50.0" prefWidth="150.0"
+               text="Producido" />
+            <TableColumn fx:id="colProduciendo" editable="false" minWidth="100.0" prefWidth="430.0"
+               text="En producción" />
+            <TableColumn fx:id="colTiempo" editable="false" minWidth="50.0" prefWidth="250.0"
+               text="Tiempo estimado" />
+            <TableColumn fx:id="colHorario" editable="false" minWidth="50.0" prefWidth="250.0"
+               sortable="false" text="Horario" />
+         </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
+      </TableView>
+      <TextArea fx:id="logTextArea" editable="false" layoutX="1020.0" layoutY="7.2"
+         prefHeight="58.0" prefWidth="250.0" AnchorPane.leftAnchor="1020.0"
+         AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="7.0">
+         <font>
+            <Font name="System Italic" size="14.0" />
+         </font>
+      </TextArea>
+      <Button layoutX="413.0" layoutY="14.0" mnemonicParsing="false" onAction="#buscarPdf"
+         prefHeight="46.0" prefWidth="186.0" text="Examinar..." textFill="#021b8c">
+         <font>
+            <Font name="System Bold" size="17.0" />
+         </font>
+         <graphic>
+            <ImageView fitHeight="37.0" fitWidth="43.0">
+               <image>
+                  <Image url="@../images/pdf.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Label layoutX="5.0" layoutY="24.0" prefHeight="31.0" prefWidth="214.0"
+         text="Ubicación programada (.pdf):" wrapText="true">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <TextField fx:id="ubicacionPdf" editable="false" layoutX="200.0" layoutY="24.0"
+         prefHeight="31.0" prefWidth="208.0" promptText="C:\Programada.pdf">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </TextField>
+      <TextField fx:id="buscador" layoutX="608.0" layoutY="32.0" onKeyTyped="#buscarArticulo"
+         prefHeight="31.0" prefWidth="301.0" promptText="Buscar...">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </TextField>
+      <CheckBox fx:id="produccionCheckBox" layoutX="609.0" layoutY="8.0" mnemonicParsing="false"
+         onAction="#enProduccion" prefHeight="22.0" prefWidth="186.0" text="Sólo tejiendo">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </CheckBox>
+      <Button layoutX="916.0" layoutY="6.0" mnemonicParsing="false" onAction="#imprimir"
+         prefHeight="58.0" prefWidth="98.0">
+         <graphic>
+            <ImageView fitHeight="48.0" fitWidth="61.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/print.png" />
+               </image>
+            </ImageView>
+         </graphic>
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

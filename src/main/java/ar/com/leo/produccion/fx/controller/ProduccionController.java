@@ -452,4 +452,20 @@ public class ProduccionController implements Initializable {
         }
     }
 
+    @FXML
+    private void handleButtonProgramada(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Programada.fxml"));
+            AnchorPane pane = loader.load();
+            Scene scene = ((Node) actionEvent.getSource()).getScene();
+            Stage stage = (Stage) scene.getWindow();
+            scene.setRoot(pane);
+            stage.setTitle("Programada");
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
