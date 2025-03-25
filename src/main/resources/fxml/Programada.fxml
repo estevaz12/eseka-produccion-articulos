@@ -40,40 +40,40 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
-      <TextArea fx:id="logTextArea" editable="false" layoutX="1020.0" layoutY="7.2"
-         prefHeight="58.0" prefWidth="250.0" AnchorPane.leftAnchor="1020.0"
-         AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="7.0">
+      <TextArea fx:id="logTextArea" editable="false" layoutX="1020.0" layoutY="6"
+         prefHeight="58.0" prefWidth="275.0"
+         AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="6.0">
          <font>
             <Font name="System Italic" size="14.0" />
          </font>
       </TextArea>
-      <Button layoutX="413.0" layoutY="14.0" mnemonicParsing="false" onAction="#buscarPdf"
-         prefHeight="46.0" prefWidth="186.0" text="Examinar..." textFill="#021b8c">
+      <Button layoutX="473.0" layoutY="6.0" mnemonicParsing="false" onAction="#buscarPdf"
+         prefHeight="58.0" prefWidth="125.0" text="Subir" textFill="#021b8c">
          <font>
             <Font name="System Bold" size="17.0" />
          </font>
          <graphic>
-            <ImageView fitHeight="37.0" fitWidth="43.0">
+            <ImageView fitHeight="40.0" fitWidth="40.0">
                <image>
                   <Image url="@../images/pdf.png" />
                </image>
             </ImageView>
          </graphic>
       </Button>
-      <Label layoutX="5.0" layoutY="24.0" prefHeight="31.0" prefWidth="214.0"
-         text="Ubicación programada (.pdf):" wrapText="true">
+      <Label layoutX="260.0" layoutY="8.0" prefHeight="22.0" maxWidth="125.0"
+         text="Ubicación (.pdf):" wrapText="true">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <TextField fx:id="ubicacionPdf" editable="false" layoutX="200.0" layoutY="24.0"
+      <TextField fx:id="ubicacionPdf" editable="false" layoutX="260.0" layoutY="32.0"
          prefHeight="31.0" prefWidth="208.0" promptText="C:\Programada.pdf">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
       <TextField fx:id="buscador" layoutX="608.0" layoutY="32.0" onKeyTyped="#buscarArticulo"
-         prefHeight="31.0" prefWidth="301.0" promptText="Buscar...">
+         prefHeight="31.0" prefWidth="200.0" promptText="Buscar artículo...">
          <font>
             <Font size="15.0" />
          </font>
@@ -84,10 +84,10 @@
             <Font name="System Bold" size="15.0" />
          </font>
       </CheckBox>
-      <Button layoutX="916.0" layoutY="6.0" mnemonicParsing="false" onAction="#imprimir"
-         prefHeight="58.0" prefWidth="98.0">
+      <Button layoutX="1010.0" layoutY="6.0" mnemonicParsing="false" onAction="#imprimir"
+         prefHeight="58.0" prefWidth="58.0">
          <graphic>
-            <ImageView fitHeight="48.0" fitWidth="61.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/print.png" />
                </image>

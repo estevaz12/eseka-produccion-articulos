@@ -26,15 +26,15 @@
             <TableColumn fx:id="colUnidades" editable="false" prefWidth="180.0"
                text="Un. producidas" />
             <TableColumn fx:id="colTarget" editable="false" prefWidth="150.0" text="Target" />
-            <TableColumn fx:id="colProduccion" editable="false" prefWidth="150.0"
-               text="\% Producido" />
+            <!-- <TableColumn fx:id="colProduccion" editable="false" prefWidth="150.0"
+               text="\% Producido" /> -->
             <TableColumn fx:id="colTiempo" editable="false" prefWidth="270.0" text="Tiempo estimado" />
             <TableColumn fx:id="colEstado" editable="false" prefWidth="230.0" text="Estado" />
          </columns>
       </TableView>
-      <TextArea fx:id="logTextArea" editable="false" layoutX="1020.0" layoutY="7.2"
-         prefHeight="58.0" prefWidth="250.0" AnchorPane.leftAnchor="1020.0"
-         AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="7.0">
+      <TextArea fx:id="logTextArea" editable="false" layoutX="1020.0" layoutY="6.0"
+         prefHeight="58.0" prefWidth="275.0"
+         AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="6.0">
          <font>
             <Font name="System Italic" size="14.0" />
          </font>
@@ -68,16 +68,18 @@
          </graphic>
       </Button>
 
-      <TextField fx:id="buscador" layoutX="608.0" layoutY="6.0" onKeyTyped="#buscarArticulo"
-         prefHeight="31.0" prefWidth="301.0" promptText="Buscar artículo...">
+      <TextField fx:id="buscador" layoutX="320.0" layoutY="18.0" onKeyTyped="#buscarArticulo"
+         prefHeight="55.0" prefWidth="200.0" promptText="Buscar artículo..."
+         AnchorPane.leftAnchor="320.0"
+         AnchorPane.topAnchor="10.0">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <Button layoutX="916.0" layoutY="6.0" mnemonicParsing="false" onAction="#imprimir"
-         prefHeight="58.0" prefWidth="98.0">
+      <Button layoutX="1010.0" layoutY="6.0" mnemonicParsing="false" onAction="#imprimir"
+         prefHeight="58.0" prefWidth="58.0">
          <graphic>
-            <ImageView fitHeight="48.0" fitWidth="61.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/print.png" />
                </image>

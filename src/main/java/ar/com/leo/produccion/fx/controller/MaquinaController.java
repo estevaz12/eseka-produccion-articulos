@@ -51,8 +51,8 @@ public class MaquinaController implements Initializable {
     private TableColumn<Maquina, String> colArticulo;
     @FXML
     private TableColumn<Maquina, Integer> colUnidades;
-    @FXML
-    private TableColumn<Maquina, String> colProduccion;
+    // @FXML
+    // private TableColumn<Maquina, String> colProduccion;
     @FXML
     private TableColumn<Maquina, Integer> colTarget;
     @FXML
@@ -193,11 +193,11 @@ public class MaquinaController implements Initializable {
                 }
             });
 
-            colProduccion.setCellValueFactory(param -> {
-                SimpleStringProperty produccion = new SimpleStringProperty();
-                produccion.set(param.getValue().getProduccion() + "%");
-                return produccion;
-            });
+            // colProduccion.setCellValueFactory(param -> {
+            //     SimpleStringProperty produccion = new SimpleStringProperty();
+            //     produccion.set(param.getValue().getProduccion() + "%");
+            //     return produccion;
+            // });
 
             colTiempo.setCellValueFactory(param -> {
                 SimpleStringProperty tiempo = new SimpleStringProperty();
@@ -271,46 +271,46 @@ public class MaquinaController implements Initializable {
             });
 
             // SORTING
-            colProduccion.setComparator(Comparator.comparingInt(s -> Integer.parseInt(s.substring(0, s.length() - 1))));
-            colTiempo.setComparator((t1, t2) -> {
-                int dias1 = 0;
-                int horas1;
-                int total1;
-                if (t1 == null || t1.length() <= 1 || t1.equals("LLEGÓ")) {
-                    total1 = 0;
-                } else {
-                    if (t1.contains("d")) {
-                        dias1 = Integer.parseInt(t1.substring(0, t1.indexOf('d')));
-                        horas1 = Integer.parseInt(t1.substring(t1.indexOf('d') + 2, t1.indexOf('h')));
-                    } else {
-                        horas1 = Integer.parseInt(t1.substring(0, t1.indexOf('h')));
-                    }
-                    int minutos1 = Integer.parseInt(t1.substring(t1.indexOf('h') + 2, t1.indexOf('m')));
-                    int segundos1 = Integer.parseInt(t1.substring(t1.indexOf('m') + 2, t1.indexOf('s')));
+            // colProduccion.setComparator(Comparator.comparingInt(s -> Integer.parseInt(s.substring(0, s.length() - 1))));
+            // colTiempo.setComparator((t1, t2) -> {
+            //     int dias1 = 0;
+            //     int horas1;
+            //     int total1;
+            //     if (t1 == null || t1.length() <= 1 || t1.equals("LLEGÓ")) {
+            //         total1 = 0;
+            //     } else {
+            //         if (t1.contains("d")) {
+            //             dias1 = Integer.parseInt(t1.substring(0, t1.indexOf('d')));
+            //             horas1 = Integer.parseInt(t1.substring(t1.indexOf('d') + 2, t1.indexOf('h')));
+            //         } else {
+            //             horas1 = Integer.parseInt(t1.substring(0, t1.indexOf('h')));
+            //         }
+            //         int minutos1 = Integer.parseInt(t1.substring(t1.indexOf('h') + 2, t1.indexOf('m')));
+            //         int segundos1 = Integer.parseInt(t1.substring(t1.indexOf('m') + 2, t1.indexOf('s')));
 
-                    total1 = (dias1 * 24 * 60 * 60) + (horas1 * 60 * 60) + (minutos1 * 60) + segundos1;
-                }
+            //         total1 = (dias1 * 24 * 60 * 60) + (horas1 * 60 * 60) + (minutos1 * 60) + segundos1;
+            //     }
 
-                int dias2 = 0;
-                int horas2;
-                int total2;
-                if (t2 == null || t2.length() <= 1 || t2.equals("LLEGÓ")) {
-                    total2 = 0;
-                } else {
-                    if (t2.contains("d")) {
-                        dias2 = Integer.parseInt(t2.substring(0, t2.indexOf('d')));
-                        horas2 = Integer.parseInt(t2.substring(t2.indexOf('d') + 2, t2.indexOf('h')));
-                    } else {
-                        horas2 = Integer.parseInt(t2.substring(0, t2.indexOf('h')));
-                    }
-                    int minutos2 = Integer.parseInt(t2.substring(t2.indexOf('h') + 2, t2.indexOf('m')));
-                    int segundos2 = Integer.parseInt(t2.substring(t2.indexOf('m') + 2, t2.indexOf('s')));
+            //     int dias2 = 0;
+            //     int horas2;
+            //     int total2;
+            //     if (t2 == null || t2.length() <= 1 || t2.equals("LLEGÓ")) {
+            //         total2 = 0;
+            //     } else {
+            //         if (t2.contains("d")) {
+            //             dias2 = Integer.parseInt(t2.substring(0, t2.indexOf('d')));
+            //             horas2 = Integer.parseInt(t2.substring(t2.indexOf('d') + 2, t2.indexOf('h')));
+            //         } else {
+            //             horas2 = Integer.parseInt(t2.substring(0, t2.indexOf('h')));
+            //         }
+            //         int minutos2 = Integer.parseInt(t2.substring(t2.indexOf('h') + 2, t2.indexOf('m')));
+            //         int segundos2 = Integer.parseInt(t2.substring(t2.indexOf('m') + 2, t2.indexOf('s')));
 
-                    total2 = (dias2 * 24 * 60 * 60) + (horas2 * 60 * 60) + (minutos2 * 60) + segundos2;
-                }
+            //         total2 = (dias2 * 24 * 60 * 60) + (horas2 * 60 * 60) + (minutos2 * 60) + segundos2;
+            //     }
 
-                return Integer.compare(total1, total2);
-            });
+            //     return Integer.compare(total1, total2);
+            // });
 
             maquinasTableView.setRowFactory(tv -> new TableRow<>() {
                 @Override
