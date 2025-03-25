@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.print.*;
 import javafx.scene.Node;
@@ -15,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.transform.Scale;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -249,6 +251,28 @@ public class ProgramadaController implements Initializable {
     @FXML
     public void enProduccion(ActionEvent event) {
         filtrar(buscador, produccionCheckBox);
+    }
+
+    @FXML
+    private void handleButtonRefresh(ActionEvent actionEvent) {
+        logTextArea.clear();
+        generar();
+    }
+
+    @FXML
+    private void handleButtonVolver(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Produccion.fxml"));
+            AnchorPane pane = loader.load();
+            Scene scene = ((Node) actionEvent.getSource()).getScene();
+            Stage stage = (Stage) scene.getWindow();
+            scene.setRoot(pane);
+            stage.setScene(scene);
+            stage.setTitle("Producción");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

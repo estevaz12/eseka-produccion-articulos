@@ -40,6 +40,30 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
+
+      <Button layoutX="5.0" layoutY="6.0" mnemonicParsing="false" onAction="#handleButtonVolver"
+         prefHeight="58.0"
+         prefWidth="58.0">
+         <graphic>
+            <ImageView fitHeight="50.0" fitWidth="50.0">
+               <image>
+                  <Image url="@../images/icons8-return-64.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+
+      <Button layoutX="80.0" layoutY="6.0" mnemonicParsing="false"
+         onAction="#handleButtonRefresh" prefHeight="58.0" prefWidth="58.0">
+         <graphic>
+            <ImageView fitHeight="50.0" fitWidth="50.0">
+               <image>
+                  <Image url="@../images/refresh.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+
       <TextArea fx:id="logTextArea" editable="false" layoutX="1020.0" layoutY="6"
          prefHeight="58.0" prefWidth="275.0"
          AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="6.0">
