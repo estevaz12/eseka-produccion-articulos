@@ -264,7 +264,7 @@ public class ProduccionController implements Initializable {
                 // Create date time formatter
                 final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm:ss");
                 // Set message label
-                mensajeLabel.setText((articuloTextBox.getText().isBlank() ? "" : "\"" + articuloTextBox.getText() + "\"\n")
+                mensajeLabel.setText((articuloTextBox.getText().isBlank() ? "" : "ART. " + articuloTextBox.getText() + " --> ")
                         + dateTimeFormatter.format(fechaInicio) + " al " + dateTimeFormatter.format(fechaFin));
             });
 
@@ -373,7 +373,7 @@ public class ProduccionController implements Initializable {
         final PrinterJob job = PrinterJob.createPrinterJob();
         if (job == null) {
             mensajeLabel.setStyle("-fx-text-fill: red;");
-            mensajeLabel.setText("No se encontraron impresoras.\n");
+            mensajeLabel.setText("No se encontraron impresoras.");
             return;
         }
     
@@ -419,7 +419,7 @@ public class ProduccionController implements Initializable {
             job.endJob();
         } else {
             mensajeLabel.setStyle("-fx-text-fill: red;");
-            mensajeLabel.setText("Error al imprimir.\n");
+            mensajeLabel.setText("Error al imprimir.");
         }
     }
 
@@ -445,6 +445,22 @@ public class ProduccionController implements Initializable {
             Stage stage = (Stage) scene.getWindow();
             scene.setRoot(pane);
             stage.setTitle("Máquinas");
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleButtonProgramada(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Programada.fxml"));
+            AnchorPane pane = loader.load();
+            Scene scene = ((Node) actionEvent.getSource()).getScene();
+            Stage stage = (Stage) scene.getWindow();
+            scene.setRoot(pane);
+            stage.setTitle("Programada");
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {

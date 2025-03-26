@@ -32,14 +32,17 @@
     - Exportar: a button that triggers the export of the table view to an Excel
       file.
 -->
+
+<!-- TODO: Description on top of table needs to show properly -->
 <AnchorPane onKeyPressed="#handleEnter" prefHeight="700.0" prefWidth="1536.0"
    stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/21.0.6"
    xmlns:fx="http://javafx.com/fxml/1"
    fx:controller="ar.com.leo.produccion.fx.controller.ProduccionController">
    <children>
-      <Label fx:id="mensajeLabel" alignment="CENTER" layoutX="4.0" layoutY="467.6"
-         prefHeight="114.0" prefWidth="441.0" textAlignment="CENTER" textFill="#007b15"
-         wrapText="true" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="1091.0">
+      <Label fx:id="mensajeLabel" alignment="CENTER" layoutX="509.0" layoutY="6.0"
+         prefHeight="50.0" prefWidth="1017.0" textAlignment="CENTER" textFill="#007b15"
+         wrapText="true" AnchorPane.leftAnchor="516.0" AnchorPane.rightAnchor="10.0"
+         AnchorPane.topAnchor="10.0">
          <font>
             <Font name="System Bold" size="17.0" />
          </font>
@@ -81,9 +84,9 @@
       </Button>
       <ComboBox fx:id="sectorComboBox" layoutX="93.0" layoutY="23.0" prefHeight="46.0"
          prefWidth="228.0" AnchorPane.topAnchor="23.0" />
-      <TableView fx:id="articulosTableView" layoutX="509.0" layoutY="6.0" prefHeight="680.0"
+      <TableView fx:id="articulosTableView" layoutX="509.0" layoutY="60.0" prefHeight="620.0"
          prefWidth="1017.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="10.0"
-         AnchorPane.leftAnchor="516.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         AnchorPane.leftAnchor="516.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="70.0">
          <columns>
             <TableColumn id="columnaArticulo" fx:id="colArticulo" editable="false" prefWidth="300.0"
                text="Artículo" />
@@ -117,9 +120,9 @@
             <Font name="System Bold" size="21.0" />
          </font>
       </CheckBox>
-      <Button layoutX="93.0" layoutY="589.6" mnemonicParsing="false"
+      <Button layoutX="93.0" layoutY="500" mnemonicParsing="false"
          onAction="#handleButtonMaquinas" prefHeight="66.0" prefWidth="303.0" text="Ver Máquinas"
-         textFill="#ff5454" AnchorPane.bottomAnchor="44.0" AnchorPane.leftAnchor="92.0">
+         textFill="#ff5454" AnchorPane.bottomAnchor="135.0" AnchorPane.leftAnchor="92.0">
          <font>
             <Font name="System Bold" size="21.0" />
          </font>
@@ -127,6 +130,21 @@
             <ImageView fitHeight="47.0" fitWidth="44.0">
                <image>
                   <Image url="@../images/icons8-sewing-machine-64.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button layoutX="93.0" layoutY="589.6" mnemonicParsing="false"
+         onAction="#handleButtonProgramada" prefHeight="66.0" prefWidth="303.0"
+         text="Con Programada"
+         textFill="black" AnchorPane.bottomAnchor="44.0" AnchorPane.leftAnchor="92.0">
+         <font>
+            <Font name="System Bold" size="21.0" />
+         </font>
+         <graphic>
+            <ImageView fitHeight="47.0" fitWidth="44.0">
+               <image>
+                  <Image url="@../images/pdf.png" />
                </image>
             </ImageView>
          </graphic>
