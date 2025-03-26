@@ -403,7 +403,10 @@ public class ProgramadaController implements Initializable {
                     articulosTableView.setItems(this.articulosProducidosList);
                     // Sort the table by the desired column in descending order
 //                    articulosTableView.sort();
-                    articulosTableView.getSortOrder().addAll(colTiempo, colProduciendo, colArticulo, colTalle);
+                    articulosTableView.getSortOrder().add(colTiempo);
+                    articulosTableView.getSortOrder().add(colProduciendo);
+                    articulosTableView.getSortOrder().add(colArticulo);
+                    articulosTableView.getSortOrder().add(colTalle);
                     colTiempo.setSortType(TableColumn.SortType.ASCENDING);
                     colProduciendo.setSortType(TableColumn.SortType.DESCENDING);
                     colArticulo.setSortType(TableColumn.SortType.ASCENDING);

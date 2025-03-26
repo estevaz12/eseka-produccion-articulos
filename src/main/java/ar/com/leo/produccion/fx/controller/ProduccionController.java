@@ -198,16 +198,16 @@ public class ProduccionController implements Initializable {
         });
     }
 
-    private String getTurno(final LocalDateTime localDateTime) {
-        int hour = localDateTime.getHour();
-        if (hour >= 6 && hour < 14) {
-            return "1";
-        } else if (hour >= 14 && hour < 22) {
-            return "2";
-        } else {
-            return "3";
-        }
-    }
+    // private String getTurno(final LocalDateTime localDateTime) {
+    //     int hour = localDateTime.getHour();
+    //     if (hour >= 6 && hour < 14) {
+    //         return "1";
+    //     } else if (hour >= 14 && hour < 22) {
+    //         return "2";
+    //     } else {
+    //         return "3";
+    //     }
+    // }
 
     private void mostrarTablaArticulos() {
         LocalDateTime fechaInicio;
