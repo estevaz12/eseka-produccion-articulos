@@ -36,7 +36,9 @@ import javafx.util.Callback;
 
 import java.net.URL;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class MaquinaController implements Initializable {
@@ -234,7 +236,7 @@ public class MaquinaController implements Initializable {
                         estado.set("TARGET");
                         break;
                     case 5:
-                        estado.set("NO CYCLE");
+                        estado.set("GIRANDO");
                         break;
                     case 6:
                         estado.set("ELECTRONICO");
@@ -271,46 +273,30 @@ public class MaquinaController implements Initializable {
             });
 
             // SORTING
+            colArticulo.setComparator((t1, t2) -> {
+                if (t1 == null || t1.length() <= 1) return 1;
+                if (t2 == null || t2.length() <= 1) return -1;
+                return t1.compareTo(t2);
+            });
+
             // colProduccion.setComparator(Comparator.comparingInt(s -> Integer.parseInt(s.substring(0, s.length() - 1))));
-            // colTiempo.setComparator((t1, t2) -> {
-            //     int dias1 = 0;
-            //     int horas1;
-            //     int total1;
-            //     if (t1 == null || t1.length() <= 1 || t1.equals("LLEGÓ")) {
-            //         total1 = 0;
-            //     } else {
-            //         if (t1.contains("d")) {
-            //             dias1 = Integer.parseInt(t1.substring(0, t1.indexOf('d')));
-            //             horas1 = Integer.parseInt(t1.substring(t1.indexOf('d') + 2, t1.indexOf('h')));
-            //         } else {
-            //             horas1 = Integer.parseInt(t1.substring(0, t1.indexOf('h')));
-            //         }
-            //         int minutos1 = Integer.parseInt(t1.substring(t1.indexOf('h') + 2, t1.indexOf('m')));
-            //         int segundos1 = Integer.parseInt(t1.substring(t1.indexOf('m') + 2, t1.indexOf('s')));
+            colTiempo.setComparator((t1, t2) -> {
+                if (t1 == null || t1.length() <= 1) return 1;
+                if (t2 == null || t2.length() <= 1) return -1;
+                if (t1.equals(t2)) return 0;
+                if (t1.equals("LLEGÓ")) return -1;
+                if (t2.equals("LLEGÓ")) return 1;
 
-            //         total1 = (dias1 * 24 * 60 * 60) + (horas1 * 60 * 60) + (minutos1 * 60) + segundos1;
-            //     }
+                int total1 = parseTime(t1);
+                int total2 = parseTime(t2);
 
-            //     int dias2 = 0;
-            //     int horas2;
-            //     int total2;
-            //     if (t2 == null || t2.length() <= 1 || t2.equals("LLEGÓ")) {
-            //         total2 = 0;
-            //     } else {
-            //         if (t2.contains("d")) {
-            //             dias2 = Integer.parseInt(t2.substring(0, t2.indexOf('d')));
-            //             horas2 = Integer.parseInt(t2.substring(t2.indexOf('d') + 2, t2.indexOf('h')));
-            //         } else {
-            //             horas2 = Integer.parseInt(t2.substring(0, t2.indexOf('h')));
-            //         }
-            //         int minutos2 = Integer.parseInt(t2.substring(t2.indexOf('h') + 2, t2.indexOf('m')));
-            //         int segundos2 = Integer.parseInt(t2.substring(t2.indexOf('m') + 2, t2.indexOf('s')));
+                return Integer.compare(total1, total2);
+            });
 
-            //         total2 = (dias2 * 24 * 60 * 60) + (horas2 * 60 * 60) + (minutos2 * 60) + segundos2;
-            //     }
-
-            //     return Integer.compare(total1, total2);
-            // });
+            colEstado.setComparator((s1, s2) -> {
+                List<String> order = Arrays.asList("TARGET", "STOP PRODUCCION", "ELECTRONICO", "MECANICO", "FALTA HILADO", "FALTA REPUESTO", "MUESTRA", "TURBINA", "GIRANDO", "CAMBIO ARTICULO", "TEJIENDO", "STOP GENERAL", "STOP ERROR", "DESINCRONIZADA", "OFF", "OFFLINE");
+                return Integer.compare(order.indexOf(s1), order.indexOf(s2));
+            });
 
             maquinasTableView.setRowFactory(tv -> new TableRow<>() {
                 @Override
@@ -478,6 +464,20 @@ public class MaquinaController implements Initializable {
         }  else {
             maquinasTableView.setItems(this.maquinasList);
         }
+    }
+
+    private int parseTime(String time) {
+        int days = 0, hours, minutes, seconds;
+        if (time.contains("d")) {
+            days = Integer.parseInt(time.substring(0, time.indexOf('d')));
+            hours = Integer.parseInt(time.substring(time.indexOf('d') + 2, time.indexOf('h')));
+        } else {
+            hours = Integer.parseInt(time.substring(0, time.indexOf('h')));
+        }
+        minutes = Integer.parseInt(time.substring(time.indexOf('h') + 2, time.indexOf('m')));
+        seconds = Integer.parseInt(time.substring(time.indexOf('m') + 2, time.indexOf('s')));
+
+        return (days * 24 * 60 * 60) + (hours * 60 * 60) + (minutes * 60) + seconds;
     }
 
 }
