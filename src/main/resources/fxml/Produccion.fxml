@@ -83,7 +83,9 @@
          </graphic>
       </Button>
       <ComboBox fx:id="sectorComboBox" layoutX="93.0" layoutY="23.0" prefHeight="46.0"
-         prefWidth="228.0" AnchorPane.topAnchor="23.0" />
+         prefWidth="228.0" AnchorPane.topAnchor="23.0">
+         <style>visibility: hidden;</style>
+      </ComboBox>
       <TableView fx:id="articulosTableView" layoutX="509.0" layoutY="60.0" prefHeight="620.0"
          prefWidth="1017.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="10.0"
          AnchorPane.leftAnchor="516.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="70.0">
@@ -100,6 +102,7 @@
          </columnResizePolicy>
       </TableView>
       <Label layoutX="22.0" layoutY="30.0" text="Sector:">
+         <style>visibility: hidden;</style>
          <font>
             <Font name="System Bold" size="21.0" />
          </font>
