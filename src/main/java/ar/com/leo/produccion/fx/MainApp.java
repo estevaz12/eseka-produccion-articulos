@@ -13,6 +13,15 @@ import javafx.stage.StageStyle;
 
 public class MainApp extends Application {
 
+    /**
+     * Start the JavaFX application.
+     * 
+     * This function will be called after the Application class is loaded. It is
+     * the entry point to the JavaFX application.
+     * 
+     * The function sets the window to be maximized and loads the GUI from the
+     * FXML file.
+     */
     @Override
     public void start(Stage stage) {
         stage.initStyle(StageStyle.DECORATED);

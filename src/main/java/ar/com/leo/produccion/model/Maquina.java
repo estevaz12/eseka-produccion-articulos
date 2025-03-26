@@ -32,8 +32,14 @@ public class Maquina {
 //    private Integer shiftDiscards;
     //    private Integer lastDiscards;
 //    private String dateStartShift;
+    private Integer needles;
+    private Integer diameterCylinder;
+    private String modelCode;
 
     private int produccion;
+    private int disponible;
+    private int cantidadProduccion;
+    private int ultimoCambio;
 
     public Maquina() {
     }
@@ -62,37 +68,13 @@ public class Maquina {
         this.state = state;
     }
 
-//    public Integer getTimeOn() {
-//        return timeOn;
-//    }
-//
-//    public void setTimeOn(Integer timeOn) {
-//        this.timeOn = timeOn;
-//    }
-//
-//    public Integer getTimeOff() {
-//        return timeOff;
-//    }
-//
-//    public void setTimeOff(Integer timeOff) {
-//        this.timeOff = timeOff;
-//    }
-//
-//    public Integer getRoomCode() {
-//        return roomCode;
-//    }
-//
-//    public void setRoomCode(Integer roomCode) {
-//        this.roomCode = roomCode;
-//    }
-//
-//    public Integer getFunctionKey() {
-//        return functionKey;
-//    }
-//
-//    public void setFunctionKey(Integer functionKey) {
-//        this.functionKey = functionKey;
-//    }
+    public Integer getRoomCode() {
+        return roomCode;
+    }
+
+    public void setRoomCode(Integer roomCode) {
+        this.roomCode = roomCode;
+    }
 
     public String getStyleCode() {
         return styleCode;
@@ -141,46 +123,30 @@ public class Maquina {
     public void setIdealCycle(Integer idealCycle) {
         this.idealCycle = idealCycle;
     }
-//
-//    public Integer getLastCycle() {
-//        return lastCycle;
-//    }
-//
-//    public void setLastCycle(Integer lastCycle) {
-//        this.lastCycle = lastCycle;
-//    }
-//
-//    public Integer getDiscards() {
-//        return discards;
-//    }
-//
-//    public void setDiscards(Integer discards) {
-//        this.discards = discards;
-//    }
-//
-//    public Integer getShift() {
-//        return shift;
-//    }
-//
-//    public void setShift(Integer shift) {
-//        this.shift = shift;
-//    }
-//
-//    public Integer getShiftDiscards() {
-//        return shiftDiscards;
-//    }
-//
-//    public void setShiftDiscards(Integer shiftDiscards) {
-//        this.shiftDiscards = shiftDiscards;
-//    }
-//
-//    public String getDateStartShift() {
-//        return dateStartShift;
-//    }
-//
-//    public void setDateStartShift(String dateStartShift) {
-//        this.dateStartShift = dateStartShift;
-//    }
+
+    public Integer getNeedles() {
+        return needles;
+    }
+
+    public void setNeedles(Integer needles) {
+        this.needles = needles;
+    }
+
+    public Integer getDiameterCylinder() {
+        return diameterCylinder;
+    }
+
+    public void setDiameterCylinder(Integer diameterCylinder) {
+        this.diameterCylinder = diameterCylinder;
+    }
+
+    public String getModelCode() {
+        return modelCode;
+    }
+
+    public void setModelCode(String modelCode) {
+        this.modelCode = modelCode;
+    }
 
     public int getProduccion() {
         return produccion;
@@ -188,5 +154,29 @@ public class Maquina {
 
     public void setProduccion(int produccion) {
         this.produccion = produccion;
+    }
+
+    public int getDisponible() {
+        return disponible;
+    }
+
+    public void setDisponible(int disponible) {
+        this.disponible = disponible;
+    }
+
+    public int getCantidadProduccion() {
+        return cantidadProduccion;
+    }
+
+    public void setCantidadProduccion(int cantidadProduccion) {
+        this.cantidadProduccion = cantidadProduccion;
+    }
+
+    public int getUltimoCambio() {
+        return ultimoCambio;
+    }
+
+    public void setUltimoCambio(int ultimoCambio) {
+        this.ultimoCambio = ultimoCambio;
     }
 }

@@ -11,20 +11,34 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.print.PageLayout;
+import javafx.print.PageOrientation;
+import javafx.print.Paper;
+import javafx.print.Printer;
+import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
+import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.net.URL;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class MaquinaController implements Initializable {
@@ -32,13 +46,15 @@ public class MaquinaController implements Initializable {
     @FXML
     private TableView<Maquina> maquinasTableView;
     @FXML
+    private TextArea logTextArea;
+    @FXML
     private TableColumn<Maquina, Integer> colMaquina;
     @FXML
     private TableColumn<Maquina, String> colArticulo;
     @FXML
     private TableColumn<Maquina, Integer> colUnidades;
-    @FXML
-    private TableColumn<Maquina, String> colProduccion;
+    // @FXML
+    // private TableColumn<Maquina, String> colProduccion;
     @FXML
     private TableColumn<Maquina, Integer> colTarget;
     @FXML
@@ -49,6 +65,8 @@ public class MaquinaController implements Initializable {
     private Region region;
     @FXML
     private ProgressIndicator progress;
+    @FXML
+    private TextField buscador;
 
     private ObservableList<Maquina> maquinasList;
     private MaquinaTask maquinaTask;
@@ -99,12 +117,89 @@ public class MaquinaController implements Initializable {
                 return articulo;
             });
             colUnidades.setCellValueFactory(new PropertyValueFactory<>("pieces"));
-            colTarget.setCellValueFactory(new PropertyValueFactory<>("targetOrder"));
-            colProduccion.setCellValueFactory(param -> {
-                SimpleStringProperty produccion = new SimpleStringProperty();
-                produccion.set(param.getValue().getProduccion() + "%");
-                return produccion;
+            // add tooltip to cell over hover
+            colUnidades.setCellFactory(new Callback<>() {
+                @Override
+                public TableCell<Maquina, Integer> call(TableColumn<Maquina, Integer> param) {
+                    return new TableCell<>() {
+                        @Override
+                        public void updateItem(Integer item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (item == null || empty) {
+                                setText(null);
+                                setTooltip(null);
+                            } else {
+                                // Get the current Maquina item
+                                final Maquina maquina = getTableRow().getItem();
+                                if (maquina != null) {
+                                    setText(item.toString());
+
+                                    int divisor = 0;
+                                    switch (MaquinaController.this.roomCode) {
+                                        case "HOMBRE":
+                                            divisor = 24;
+                                            break;
+                                        default:
+                                            divisor = 12;
+                                    }
+
+                                    final int doc = maquina.getPieces() / divisor;
+                                    final Tooltip tooltip = new Tooltip(doc + " doc.");
+                                    
+                                    javafx.util.Duration duration = javafx.util.Duration.millis(100);
+                                    tooltip.setShowDelay(duration);
+                                    setTooltip(tooltip);
+                                }
+                            }
+                        }
+                    };
+                }
             });
+            
+            colTarget.setCellValueFactory(new PropertyValueFactory<>("targetOrder"));
+            colTarget.setCellFactory(new Callback<>() {
+                @Override
+                public TableCell<Maquina, Integer> call(TableColumn<Maquina, Integer> param) {
+                    return new TableCell<>() {
+                        @Override
+                        public void updateItem(Integer item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (item == null || empty) {
+                                setText(null);
+                                setTooltip(null);
+                            } else {
+                                // Get the current Maquina item
+                                final Maquina maquina = getTableRow().getItem();
+                                if (maquina != null) {
+                                    setText(item.toString());
+
+                                    int divisor = 0;
+                                    switch (MaquinaController.this.roomCode) {
+                                        case "HOMBRE":
+                                            divisor = 24;
+                                            break;
+                                        default:
+                                            divisor = 12;
+                                    }
+
+                                    final int doc = maquina.getTargetOrder() / divisor;
+                                    final Tooltip tooltip = new Tooltip(doc + " doc.");
+                                    
+                                    javafx.util.Duration duration = javafx.util.Duration.millis(100);
+                                    tooltip.setShowDelay(duration);
+                                    setTooltip(tooltip);
+                                }
+                            }
+                        }
+                    };
+                }
+            });
+
+            // colProduccion.setCellValueFactory(param -> {
+            //     SimpleStringProperty produccion = new SimpleStringProperty();
+            //     produccion.set(param.getValue().getProduccion() + "%");
+            //     return produccion;
+            // });
 
             colTiempo.setCellValueFactory(param -> {
                 SimpleStringProperty tiempo = new SimpleStringProperty();
@@ -126,13 +221,13 @@ public class MaquinaController implements Initializable {
                 SimpleStringProperty estado = new SimpleStringProperty();
                 switch (param.getValue().getState()) {
                     case 0:
-                        estado.set("RUN");
+                        estado.set("TEJIENDO");
                         break;
                     case 1:
                         estado.set("OFF");
                         break;
                     case 2:
-                        estado.set("GENERAL STOP");
+                        estado.set("STOP GENERAL");
                         break;
                     case 3:
                         estado.set("STOP ERROR");
@@ -141,7 +236,7 @@ public class MaquinaController implements Initializable {
                         estado.set("TARGET");
                         break;
                     case 5:
-                        estado.set("NO CYCLE");
+                        estado.set("GIRANDO");
                         break;
                     case 6:
                         estado.set("ELECTRONICO");
@@ -150,7 +245,7 @@ public class MaquinaController implements Initializable {
                         estado.set("MECANICO");
                         break;
                     case 8:
-                        estado.set("PRODUCCION");
+                        estado.set("STOP PRODUCCION");
                         break;
                     case 9:
                         estado.set("FALTA HILADO");
@@ -178,45 +273,29 @@ public class MaquinaController implements Initializable {
             });
 
             // SORTING
-            colProduccion.setComparator(Comparator.comparingInt(s -> Integer.parseInt(s.substring(0, s.length() - 1))));
+            colArticulo.setComparator((t1, t2) -> {
+                if (t1 == null || t1.length() <= 1) return 1;
+                if (t2 == null || t2.length() <= 1) return -1;
+                return t1.compareTo(t2);
+            });
+
+            // colProduccion.setComparator(Comparator.comparingInt(s -> Integer.parseInt(s.substring(0, s.length() - 1))));
             colTiempo.setComparator((t1, t2) -> {
-                int dias1 = 0;
-                int horas1;
-                int total1;
-                if (t1 == null || t1.length() <= 1 || t1.equals("LLEGÓ")) {
-                    total1 = 0;
-                } else {
-                    if (t1.contains("d")) {
-                        dias1 = Integer.parseInt(t1.substring(0, t1.indexOf('d')));
-                        horas1 = Integer.parseInt(t1.substring(t1.indexOf('d') + 2, t1.indexOf('h')));
-                    } else {
-                        horas1 = Integer.parseInt(t1.substring(0, t1.indexOf('h')));
-                    }
-                    int minutos1 = Integer.parseInt(t1.substring(t1.indexOf('h') + 2, t1.indexOf('m')));
-                    int segundos1 = Integer.parseInt(t1.substring(t1.indexOf('m') + 2, t1.indexOf('s')));
+                if (t1 == null || t1.length() <= 1) return 1;
+                if (t2 == null || t2.length() <= 1) return -1;
+                if (t1.equals(t2)) return 0;
+                if (t1.equals("LLEGÓ")) return -1;
+                if (t2.equals("LLEGÓ")) return 1;
 
-                    total1 = (dias1 * 24 * 60 * 60) + (horas1 * 60 * 60) + (minutos1 * 60) + segundos1;
-                }
-
-                int dias2 = 0;
-                int horas2;
-                int total2;
-                if (t2 == null || t2.length() <= 1 || t2.equals("LLEGÓ")) {
-                    total2 = 0;
-                } else {
-                    if (t2.contains("d")) {
-                        dias2 = Integer.parseInt(t2.substring(0, t2.indexOf('d')));
-                        horas2 = Integer.parseInt(t2.substring(t2.indexOf('d') + 2, t2.indexOf('h')));
-                    } else {
-                        horas2 = Integer.parseInt(t2.substring(0, t2.indexOf('h')));
-                    }
-                    int minutos2 = Integer.parseInt(t2.substring(t2.indexOf('h') + 2, t2.indexOf('m')));
-                    int segundos2 = Integer.parseInt(t2.substring(t2.indexOf('m') + 2, t2.indexOf('s')));
-
-                    total2 = (dias2 * 24 * 60 * 60) + (horas2 * 60 * 60) + (minutos2 * 60) + segundos2;
-                }
+                int total1 = parseTime(t1);
+                int total2 = parseTime(t2);
 
                 return Integer.compare(total1, total2);
+            });
+
+            colEstado.setComparator((s1, s2) -> {
+                List<String> order = Arrays.asList("TARGET", "STOP PRODUCCION", "ELECTRONICO", "MECANICO", "FALTA HILADO", "FALTA REPUESTO", "MUESTRA", "TURBINA", "GIRANDO", "CAMBIO ARTICULO", "TEJIENDO", "STOP GENERAL", "STOP ERROR", "DESINCRONIZADA", "OFF", "OFFLINE");
+                return Integer.compare(order.indexOf(s1), order.indexOf(s2));
             });
 
             maquinasTableView.setRowFactory(tv -> new TableRow<>() {
@@ -229,17 +308,19 @@ public class MaquinaController implements Initializable {
                             style += "-fx-font-weight: bold;";
                         }
 
-                        if (maquina.getState() == 8 || maquina.getState() == 13)
+                        if (maquina.getState() == 8) // produccion
                             style += "-fx-text-background-color: white;-fx-background-color: #9b0000;";
-                        else if (maquina.getState() == 6 || maquina.getState() == 7)
+                        else if(maquina.getState() == 13) // turbina
+                            style += "-fx-text-background-color: black;-fx-background-color: #00ffee;";
+                        else if (maquina.getState() == 6 || maquina.getState() == 7) // mecanico / electronico
                             style += "-fx-background-color: #ff0000;";
-                        else if (maquina.getState() == 1 || maquina.getState() == 56 || maquina.getState() == 65535)
+                        else if (maquina.getState() == 1 || maquina.getState() == 56 || maquina.getState() == 65535) // offline
                             style += "-fx-background-color: #8d8d8d;";
-                        else if (maquina.getState() == 9 || maquina.getState() == 10)
+                        else if (maquina.getState() == 9 || maquina.getState() == 10) // falta hilado / repuesto
                             style += "-fx-background-color: #dcd900;";
-                        else {
+                        else { // llegó al target
                             if (maquina.getProduccion() >= 100) {
-                                style += "-fx-background-color: #be16d5;";
+                                style += "-fx-background-color: #77ff00;";
                             }
                         }
                     }
@@ -273,6 +354,11 @@ public class MaquinaController implements Initializable {
     }
 
     @FXML
+    private void handleButtonRefresh(ActionEvent actionEvent) {
+        this.mostrarTablaMaquinas(roomCode);
+    }
+
+    @FXML
     private void handleButtonVolver(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Produccion.fxml"));
@@ -286,6 +372,112 @@ public class MaquinaController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    public void imprimir(ActionEvent event) {
+
+        if (maquinasTableView.getItems().size() > 0) {
+            // Create a PrinterJob
+            final PrinterJob job = PrinterJob.createPrinterJob();
+            if (job == null) {
+                logTextArea.setStyle("-fx-text-fill: red;");
+                logTextArea.setText("No se encontraron impresoras.\n");
+                return;
+            }
+
+            // Get the default printer
+            final Printer printer = Printer.getDefaultPrinter();
+
+            // Customize the page layout
+            final PageLayout pageLayout = printer.createPageLayout(
+                    Paper.A4, // Default paper size
+                    PageOrientation.LANDSCAPE, // Set orientation (PORTRAIT or LANDSCAPE)
+                    Printer.MarginType.HARDWARE_MINIMUM // Set to minimum margins
+            );
+
+            // Display the print dialog to allow users to choose settings
+            boolean proceed = job.showPrintDialog(maquinasTableView.getScene().getWindow());
+            if (!proceed) {
+                return;
+            }
+
+            // Set the job's page layout
+            job.getJobSettings().setPageLayout(pageLayout);
+
+            // Create a label to show the date at the bottom
+//            Label dateLabel = new Label(formatter.format(LocalDateTime.now()));
+//            dateLabel.setStyle("-fx-font-size: 10px; -fx-alignment: center;");
+//            dateLabel.setPrefWidth(pageLayout.getPrintableWidth());
+//            dateLabel.setPadding(new Insets(50, 0, 0, 0));
+
+            // Combine the table and the date
+//            VBox printableContent = new VBox(maquinasTableView, dateLabel);
+//            printableContent.setPrefHeight(pageLayout.getPrintableHeight());
+//            printableContent.setPrefWidth(pageLayout.getPrintableWidth());
+////            printableContent.setAutoSizeChildren(false);
+//            printableContent.setAlignment(Pos.CENTER);
+
+            // Calculate the scale factor to fit the TableView to the page
+            double scaleX = pageLayout.getPrintableWidth() / maquinasTableView.getBoundsInParent().getWidth();
+            double scaleY = pageLayout.getPrintableHeight() / maquinasTableView.getBoundsInParent().getHeight();
+            double scale = Math.min(scaleX, scaleY);
+
+            // Apply the scaling transformation
+            Scale scaleTransform = new Scale(scale, scale);
+            maquinasTableView.getTransforms().add(scaleTransform);
+
+            // Print the table
+            boolean success = job.printPage(pageLayout, maquinasTableView);
+
+            // Reset the table's transformations and height
+            maquinasTableView.getTransforms().remove(scaleTransform);
+            if (success) {
+                job.endJob();
+            } else {
+                logTextArea.setStyle("-fx-text-fill: red;");
+                logTextArea.setText("Error al imprimir.\n");
+            }
+        } else {
+            logTextArea.setStyle("-fx-text-fill: red;");
+            logTextArea.setText("No hay ninguna tabla para imprimir.\n");
+        }
+    }
+
+    @FXML
+    public void buscarArticulo(KeyEvent event) {
+        filtrar(buscador);
+    }
+
+    private void filtrar(TextField buscador) {
+        if (!buscador.getText().isBlank()) {
+            // Filter the data based on the input
+            final ObservableList<Maquina> filteredData = FXCollections.observableArrayList();
+            for (Maquina maquina : this.maquinasList) {
+                if (maquina.getStyleCode() != null 
+                    && (maquina.getStyleCode()).contains(buscador.getText())) {
+                    filteredData.add(maquina);
+                }
+            }
+            // Update the table with the filtered data
+            maquinasTableView.setItems(filteredData);
+        }  else {
+            maquinasTableView.setItems(this.maquinasList);
+        }
+    }
+
+    private int parseTime(String time) {
+        int days = 0, hours, minutes, seconds;
+        if (time.contains("d")) {
+            days = Integer.parseInt(time.substring(0, time.indexOf('d')));
+            hours = Integer.parseInt(time.substring(time.indexOf('d') + 2, time.indexOf('h')));
+        } else {
+            hours = Integer.parseInt(time.substring(0, time.indexOf('h')));
+        }
+        minutes = Integer.parseInt(time.substring(time.indexOf('h') + 2, time.indexOf('m')));
+        seconds = Integer.parseInt(time.substring(time.indexOf('m') + 2, time.indexOf('s')));
+
+        return (days * 24 * 60 * 60) + (hours * 60 * 60) + (minutes * 60) + seconds;
     }
 
 }
