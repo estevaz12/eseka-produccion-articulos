@@ -1,6 +1,5 @@
 package ar.com.leo.produccion.fx.service;
 
-import ar.com.leo.produccion.jdbc.ArticuloProducidoDAO;
 import ar.com.leo.produccion.jdbc.ColorDAO;
 import ar.com.leo.produccion.jdbc.ProgramadaArticuloProducidoDAO;
 import ar.com.leo.produccion.model.ArticuloColor;
