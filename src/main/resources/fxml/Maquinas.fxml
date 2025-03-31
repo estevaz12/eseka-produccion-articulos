@@ -76,6 +76,19 @@
             <Font size="15.0" />
          </font>
       </TextField>
+      <Button layoutX="800.0" layoutY="6.0" mnemonicParsing="false" onAction="#handleButtonPDF"
+         prefHeight="58.0" prefWidth="200.0" text="Exportar todo" textFill="#021b8c">
+         <font>
+            <Font name="System Bold" size="17.0" />
+         </font>
+         <graphic>
+            <ImageView fitHeight="40.0" fitWidth="40.0">
+               <image>
+                  <Image url="@../images/pdf.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
       <Button layoutX="1010.0" layoutY="6.0" mnemonicParsing="false" onAction="#imprimir"
          prefHeight="58.0" prefWidth="58.0">
          <graphic>
