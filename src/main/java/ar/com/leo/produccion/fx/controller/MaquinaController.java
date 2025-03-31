@@ -1,5 +1,6 @@
 package ar.com.leo.produccion.fx.controller;
 
+import ar.com.leo.produccion.fx.service.MaquinaPDFTask;
 import ar.com.leo.produccion.fx.service.MaquinaTask;
 import ar.com.leo.produccion.jdbc.DataSourceConfig;
 import ar.com.leo.produccion.model.Maquina;
@@ -19,13 +20,6 @@ import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
@@ -34,8 +28,10 @@ import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -69,6 +65,7 @@ public class MaquinaController implements Initializable {
 
     private ObservableList<Maquina> maquinasList;
     private MaquinaTask maquinaTask;
+    private MaquinaPDFTask pdfTask;
 
     private final String roomCode;
 
@@ -98,7 +95,7 @@ public class MaquinaController implements Initializable {
                     String art = styleCode.substring(0, 5);
                     String talle;
                     if (styleCode.charAt(5) == '9') {
-                        talle = "PARCHE";
+                        talle = "PA";
                     } else {
                         talle = "T." + styleCode.charAt(5);
                     }
@@ -226,10 +223,10 @@ public class MaquinaController implements Initializable {
                         estado.set("OFF");
                         break;
                     case 2:
-                        estado.set("STOP GENERAL");
+                        estado.set("TEJIENDO");
                         break;
                     case 3:
-                        estado.set("STOP ERROR");
+                        estado.set("TEJIENDO");
                         break;
                     case 4:
                         estado.set("TARGET");
@@ -314,7 +311,7 @@ public class MaquinaController implements Initializable {
                         else if (maquina.getState() == 6 || maquina.getState() == 7) // mecanico / electronico
                             style += "-fx-background-color: #ff0000;";
                         else if (maquina.getState() == 1 || maquina.getState() == 56 || maquina.getState() == 65535) // offline
-                            style += "-fx-background-color: #8d8d8d;";
+                            style += "-fx-text-background-color: white;-fx-background-color: #8d8d8d;";
                         else if (maquina.getState() == 9 || maquina.getState() == 10) // falta hilado / repuesto
                             style += "-fx-background-color: #dcd900;";
                         else { // llegó al target
@@ -371,6 +368,49 @@ public class MaquinaController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void handleButtonPDF(ActionEvent actionEvent) throws IOException {
+        logTextArea.setText(null);
+
+        List<List<String>> data = new ArrayList<>();
+
+        ObservableList<Maquina> maquinas = maquinasTableView.getItems();
+        for (Maquina maquina : maquinas) {
+            List<String> row = new ArrayList<>();
+
+            Integer maquinaVal = (Integer) colMaquina.getCellData(maquina);
+            String articuloVal = (String) colArticulo.getCellData(maquina);
+            Integer unidadesVal = (Integer) colUnidades.getCellData(maquina);
+            Integer targetVal = (Integer) colTarget.getCellData(maquina);
+            String tiempoVal = (String) colTiempo.getCellData(maquina);
+            String estadoVal = (String) colEstado.getCellData(maquina);
+            
+            row.add(String.valueOf(maquinaVal));
+            row.add(articuloVal);
+            row.add(String.valueOf(unidadesVal));
+            row.add(String.valueOf(targetVal));
+            row.add(tiempoVal);
+            row.add(estadoVal);
+
+            data.add(row);
+        }
+
+        pdfTask = new MaquinaPDFTask(data);
+        
+        pdfTask.setOnFailed(event -> {
+            logTextArea.setText("Error: No se ha podido exportar.");
+            event.getSource().getException().printStackTrace();
+        });
+
+        pdfTask.setOnRunning(event -> {
+            logTextArea.setText("Exportando...");
+        });
+        pdfTask.setOnSucceeded(event -> logTextArea.setText("Pdf generado en: " + System.getProperty("user.dir") + "\\Produccion.xls"));
+        Thread thread = new Thread(pdfTask);
+        thread.setDaemon(true);
+        thread.start();
     }
 
     @FXML
