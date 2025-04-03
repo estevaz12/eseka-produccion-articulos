@@ -97,6 +97,8 @@ public class MaquinaController implements Initializable {
                     String talle;
                     if (styleCode.charAt(5) == '9') {
                         talle = "PA";
+                    } else if (styleCode.charAt(5) == '8') {
+                        talle = "T.1 (U)";
                     } else {
                         talle = "T." + styleCode.charAt(5);
                     }
@@ -215,7 +217,7 @@ public class MaquinaController implements Initializable {
                         estado.set("TEJIENDO");
                         break;
                     case 1:
-                        estado.set("OFF");
+                        estado.set("PARADA");
                         break;
                     case 2:
                         estado.set("TEJIENDO");
@@ -254,10 +256,10 @@ public class MaquinaController implements Initializable {
                         estado.set("TURBINA");
                         break;
                     case 56:
-                        estado.set("OFFLINE");
+                        estado.set("PARADA");
                         break;
                     case 65535:
-                        estado.set("DESINCRONIZADA");
+                        estado.set("PARADA");
                         break;
                 }
                 return estado;
@@ -285,7 +287,7 @@ public class MaquinaController implements Initializable {
             });
 
             colEstado.setComparator((s1, s2) -> {
-                List<String> order = Arrays.asList("TARGET", "STOP PRODUCCION", "ELECTRONICO", "MECANICO", "FALTA HILADO", "FALTA REPUESTO", "MUESTRA", "TURBINA", "GIRANDO", "CAMBIO ARTICULO", "TEJIENDO", "STOP GENERAL", "STOP ERROR", "DESINCRONIZADA", "OFF", "OFFLINE");
+                List<String> order = Arrays.asList("TARGET", "STOP PRODUCCION", "ELECTRONICO", "MECANICO", "FALTA HILADO", "FALTA REPUESTO", "MUESTRA", "TURBINA", "GIRANDO", "CAMBIO ARTICULO", "TEJIENDO", "PARADA");
                 return Integer.compare(order.indexOf(s1), order.indexOf(s2));
             });
 
@@ -377,8 +379,13 @@ public class MaquinaController implements Initializable {
 
             Integer maquinaVal = (Integer) colMaquina.getCellData(maquina);
             String articuloVal = (String) colArticulo.getCellData(maquina);
-            Integer unidadesVal = (Integer) colUnidades.getCellData(maquina);
-            Integer targetVal = (Integer) colTarget.getCellData(maquina);
+
+            Double unidadesVal = (Double) colDocenas.getCellData(maquina);
+            Double targetVal = (Double) colTarget.getCellData(maquina);
+            // only one decimal point
+            unidadesVal = unidadesVal == null ? 0.0 : Math.round(unidadesVal * 10.0) / 10.0;
+            targetVal = targetVal == null ? 0.0 : Math.round(targetVal * 10.0) / 10.0;
+
             String tiempoVal = (String) colTiempo.getCellData(maquina);
             String estadoVal = (String) colEstado.getCellData(maquina);
             

@@ -61,7 +61,7 @@ public class MaquinaPDFTask extends Task<Void> {
         int numberOfColumns = 6;
 
         // Fixed headers.
-        String[] headers = {"Maquina", "Artículo", "Un. Producidas", "Target", "Tiempo Estimado", "Estado"};
+        String[] headers = {"Maquina", "Artículo", "Doc. Producidas", "Target", "Tiempo Estimado", "Estado"};
         
         // Define column widths as fractions of the table width.
         float[] colWidths = calcColWidths(data, headers, textFont, textFontSize, tableWidth);
