@@ -101,26 +101,43 @@ public class ArticuloProducidoDAO {
 
                         if (styleCode.length() > 6) {
 
-                            if (styleCode.charAt(5) == '9') {
-                                talle = "PA";
-                            } else if (styleCode.charAt(5) == '8') {
-                                talle = "T.1 (U)";
+                            if (roomCode.equals("SEAMLESS")) {
+                                if (styleCode.charAt(5) == '9') {
+                                    talle = "PA";
+                                } else {
+                                    talle = "T." + styleCode.charAt(5);
+                                }
+                                color = styleCode.substring(6, 8);
+                                if (styleCode.length() > 8 && styleCode.startsWith("02", 14)) // .2
+                                    articuloProducido.setStyleCode(art + " " + talle + " " + color + " (.2)");
+                                else if (styleCode.length() > 8 && styleCode.startsWith("06", 14)) // .6
+                                    articuloProducido.setStyleCode(art + " " + talle + " " + color + " (.6)");
+                                else if (styleCode.length() > 8 && styleCode.startsWith("08", 14)) // .8
+                                    articuloProducido.setStyleCode(art + " " + talle + " " + color + " (.8)");
+                                else
+                                    articuloProducido.setStyleCode(art + " " + talle + " " + color);
                             } else {
-                                talle = "T." + styleCode.charAt(5);
-                            }
-                            
-                            color = styleCode.substring(6, 8);
-                            if (styleCode.length() > 8 && styleCode.startsWith("02", 14)) // .2
-                                articuloProducido.setStyleCode(art + "  " +  talle + "  " + color + "  (.2)");
-                            else if (styleCode.length() > 8 && styleCode.startsWith("06", 14)) // .6
-                                articuloProducido.setStyleCode(art + "  " + talle + "  " + color + "  (.6)");
-                            else if (styleCode.length() > 8 && styleCode.startsWith("08", 14)) // .8
-                                articuloProducido.setStyleCode(art + "  " + talle + "  " + color + "  (.8)");
-                            else
-                                articuloProducido.setStyleCode(art + "  " + talle + "  " + color);
+                                if (styleCode.charAt(5) == '9') {
+                                    talle = "PA";
+                                } else if (styleCode.charAt(5) == '8') {
+                                    talle = "T.1 (U)";
+                                } else {
+                                    talle = "T." + styleCode.charAt(5);
+                                }
+                                
+                                color = styleCode.substring(6, 8);
+                                if (styleCode.length() > 8 && styleCode.startsWith("02", 14)) // .2
+                                    articuloProducido.setStyleCode(art + "  " +  talle + "  " + color + "  (.2)");
+                                else if (styleCode.length() > 8 && styleCode.startsWith("06", 14)) // .6
+                                    articuloProducido.setStyleCode(art + "  " + talle + "  " + color + "  (.6)");
+                                else if (styleCode.length() > 8 && styleCode.startsWith("08", 14)) // .8
+                                    articuloProducido.setStyleCode(art + "  " + talle + "  " + color + "  (.8)");
+                                else
+                                    articuloProducido.setStyleCode(art + "  " + talle + "  " + color);
 
-                            articuloProducido.setNumero(art);
-                            articuloProducido.setColor(color);
+                                articuloProducido.setNumero(art);
+                                articuloProducido.setColor(color);
+                            }
 
                             int unidades = rs.getInt("Unidades");
                             if (styleCode.contains("#")) {

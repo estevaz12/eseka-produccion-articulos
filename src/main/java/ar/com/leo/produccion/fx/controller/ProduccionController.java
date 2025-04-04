@@ -100,8 +100,8 @@ public class ProduccionController implements Initializable {
 
         Platform.runLater(() -> {
             // Initialize sector combo box with predefined values
-            sectorComboBox.setItems(FXCollections.observableList(List.of("HOMBRE")));
-            sectorComboBox.getSelectionModel().select(0);
+            sectorComboBox.setItems(FXCollections.observableList(List.of("HOMBRE", "SEAMLESS")));
+            sectorComboBox.getSelectionModel().select(1);
 
             // Set date converters for date pickers
             fechaInicioDatePicker.setConverter(new StringConverter<>() {

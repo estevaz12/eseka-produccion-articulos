@@ -131,7 +131,7 @@ public class MaquinaPDFTask extends Task<Void> {
                 } else { 
                     // Other columns: Fully centered
                     cellCenterX = textX + (colWidths[i] - textWidth) / 2;
-}
+                }
 
                 contentStream.beginText();
                 contentStream.newLineAtOffset(cellCenterX, textY);

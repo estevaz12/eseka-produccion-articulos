@@ -6,7 +6,6 @@ import ar.com.leo.produccion.jdbc.DataSourceConfig;
 import ar.com.leo.produccion.model.Maquina;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -48,11 +47,11 @@ public class MaquinaController implements Initializable {
     @FXML
     private TableColumn<Maquina, String> colArticulo;
     @FXML
-    private TableColumn<Maquina, Double> colDocenas;
+    private TableColumn<Maquina, Integer> colUnidades;
+    // @FXML
+    // private TableColumn<Maquina, String> colProduccion;
     @FXML
-    private TableColumn<Maquina, String> colProduccion;
-    @FXML
-    private TableColumn<Maquina, Double> colTarget;
+    private TableColumn<Maquina, Integer> colTarget;
     @FXML
     private TableColumn<Maquina, String> colTiempo;
     @FXML
@@ -74,7 +73,7 @@ public class MaquinaController implements Initializable {
     public MaquinaController(String roomCode) {
         this.roomCode = roomCode;
     }
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         if (DataSourceConfig.dataSource == null) {
@@ -92,52 +91,65 @@ public class MaquinaController implements Initializable {
             colArticulo.setCellValueFactory(param -> {
                 SimpleStringProperty articulo = new SimpleStringProperty();
                 String styleCode = param.getValue().getStyleCode();
-                String punto = param.getValue().getPunto();
+                if (roomCode == "HOMBRE") { // Hombre
+                    String punto = param.getValue().getPunto();
+                    
+                    if (styleCode.length() > 6) {
+                        String art = "    " + styleCode.substring(0, 5);
 
-                if (styleCode.length() > 6) {
-                    String art = "    " + styleCode.substring(0, 5);
+                        if (punto != null) {
+                            art += "." + punto;
+                        }
 
-                    if (punto != null) {
-                        art += "." + punto;
+                        String talle;
+                        if (styleCode.charAt(5) == '9') {
+                            talle = "PA";
+                        } else if (styleCode.charAt(5) == '8') {
+                            talle = "T.1 (U)";
+                        } else {
+                            talle = "T." + styleCode.charAt(5);
+                        }
+
+                        String color = styleCode.substring(6, 8);
+                        if (styleCode.length() > 8 && styleCode.startsWith("02", 14)) // .2
+                            articulo.set(art + "    " +  talle + "    " + color + "  (.2)");
+                        else if (styleCode.length() > 8 && styleCode.startsWith("06", 14)) // .6
+                            articulo.set(art + "    " + talle + "    " + color + "  (.6)");
+                        else if (styleCode.length() > 8 && styleCode.startsWith("08", 14)) // .8
+                            articulo.set(art + "    " + talle + "    " + color + "  (.8)");
+                        else
+                            articulo.set(art + "    " + talle + "    " + color);
                     }
-
+                } else if (styleCode.length() > 6) {
+                    colArticulo.setStyle("-fx-alignment: CENTER;");
+                    String art = styleCode.substring(0, 5);
                     String talle;
                     if (styleCode.charAt(5) == '9') {
                         talle = "PA";
-                    } else if (styleCode.charAt(5) == '8') {
-                        talle = "T.1 (U)";
                     } else {
                         talle = "T." + styleCode.charAt(5);
                     }
-
                     String color = styleCode.substring(6, 8);
                     if (styleCode.length() > 8 && styleCode.startsWith("02", 14)) // .2
-                        articulo.set(art + "    " +  talle + "    " + color + "  (.2)");
+                        articulo.set(art + " " + talle + " " + color + " (.2)");
                     else if (styleCode.length() > 8 && styleCode.startsWith("06", 14)) // .6
-                        articulo.set(art + "    " + talle + "    " + color + "  (.6)");
+                        articulo.set(art + " " + talle + " " + color + " (.6)");
                     else if (styleCode.length() > 8 && styleCode.startsWith("08", 14)) // .8
-                        articulo.set(art + "    " + talle + "    " + color + "  (.8)");
+                        articulo.set(art + " " + talle + " " + color + " (.8)");
                     else
-                        articulo.set(art + "    " + talle + "    " + color);
+                        articulo.set(art + " " + talle + " " + color);
                 }
 
                 return articulo;
             });
-
-            colDocenas.setCellValueFactory(param -> {
-                SimpleDoubleProperty docenas = new SimpleDoubleProperty();
-                Maquina maquina = param.getValue();
-                if (maquina != null) {
-                    docenas.set((double) maquina.getPieces() / 24);
-                }
-                return docenas.asObject();
-            });
-            colDocenas.setCellFactory(new Callback<>() {
+            colUnidades.setCellValueFactory(new PropertyValueFactory<>("pieces"));
+            // add tooltip to cell over hover
+            colUnidades.setCellFactory(new Callback<>() {
                 @Override
-                public TableCell<Maquina, Double> call(TableColumn<Maquina, Double> param) {
+                public TableCell<Maquina, Integer> call(TableColumn<Maquina, Integer> param) {
                     return new TableCell<>() {
                         @Override
-                        public void updateItem(Double item, boolean empty) {
+                        public void updateItem(Integer item, boolean empty) {
                             super.updateItem(item, empty);
                             if (item == null || empty) {
                                 setText(null);
@@ -146,9 +158,19 @@ public class MaquinaController implements Initializable {
                                 // Get the current Maquina item
                                 final Maquina maquina = getTableRow().getItem();
                                 if (maquina != null) {
-                                    setText(String.format("%.1f", item));
-                                    final int pieces = maquina.getPieces();
-                                    final Tooltip tooltip = new Tooltip(pieces + " un.");
+                                    setText(item.toString());
+
+                                    int divisor = 0;
+                                    switch (MaquinaController.this.roomCode) {
+                                        case "HOMBRE":
+                                            divisor = 24;
+                                            break;
+                                        default:
+                                            divisor = 12;
+                                    }
+
+                                    final int doc = maquina.getPieces() / divisor;
+                                    final Tooltip tooltip = new Tooltip(doc + " doc.");
                                     
                                     javafx.util.Duration duration = javafx.util.Duration.millis(100);
                                     tooltip.setShowDelay(duration);
@@ -160,20 +182,13 @@ public class MaquinaController implements Initializable {
                 }
             });
             
-            colTarget.setCellValueFactory(param -> {
-                SimpleDoubleProperty target = new SimpleDoubleProperty();
-                Maquina maquina = param.getValue();
-                if (maquina != null) {
-                    target.set((double) maquina.getTargetOrder() / 24);
-                }
-                return target.asObject();
-            });
+            colTarget.setCellValueFactory(new PropertyValueFactory<>("targetOrder"));
             colTarget.setCellFactory(new Callback<>() {
                 @Override
-                public TableCell<Maquina, Double> call(TableColumn<Maquina, Double> param) {
+                public TableCell<Maquina, Integer> call(TableColumn<Maquina, Integer> param) {
                     return new TableCell<>() {
                         @Override
-                        public void updateItem(Double item, boolean empty) {
+                        public void updateItem(Integer item, boolean empty) {
                             super.updateItem(item, empty);
                             if (item == null || empty) {
                                 setText(null);
@@ -182,9 +197,19 @@ public class MaquinaController implements Initializable {
                                 // Get the current Maquina item
                                 final Maquina maquina = getTableRow().getItem();
                                 if (maquina != null) {
-                                    setText(String.format("%.1f", item));
-                                    final int targetOrder = maquina.getTargetOrder();
-                                    final Tooltip tooltip = new Tooltip(targetOrder + " un.");
+                                    setText(item.toString());
+
+                                    int divisor = 0;
+                                    switch (MaquinaController.this.roomCode) {
+                                        case "HOMBRE":
+                                            divisor = 24;
+                                            break;
+                                        default:
+                                            divisor = 12;
+                                    }
+
+                                    final int doc = maquina.getTargetOrder() / divisor;
+                                    final Tooltip tooltip = new Tooltip(doc + " doc.");
                                     
                                     javafx.util.Duration duration = javafx.util.Duration.millis(100);
                                     tooltip.setShowDelay(duration);
@@ -225,7 +250,7 @@ public class MaquinaController implements Initializable {
                         estado.set("TEJIENDO");
                         break;
                     case 1:
-                        estado.set("PARADA");
+                        estado.set("OFF");
                         break;
                     case 2:
                         estado.set("TEJIENDO");
@@ -264,10 +289,10 @@ public class MaquinaController implements Initializable {
                         estado.set("TURBINA");
                         break;
                     case 56:
-                        estado.set("PARADA");
+                        estado.set("OFFLINE");
                         break;
                     case 65535:
-                        estado.set("PARADA");
+                        estado.set("DESINCRONIZADA");
                         break;
                 }
                 return estado;
@@ -295,7 +320,7 @@ public class MaquinaController implements Initializable {
             });
 
             colEstado.setComparator((s1, s2) -> {
-                List<String> order = Arrays.asList("TARGET", "STOP PRODUCCION", "ELECTRONICO", "MECANICO", "FALTA HILADO", "FALTA REPUESTO", "MUESTRA", "TURBINA", "GIRANDO", "CAMBIO ARTICULO", "TEJIENDO", "PARADA");
+                List<String> order = Arrays.asList("TARGET", "STOP PRODUCCION", "ELECTRONICO", "MECANICO", "FALTA HILADO", "FALTA REPUESTO", "MUESTRA", "TURBINA", "GIRANDO", "CAMBIO ARTICULO", "TEJIENDO", "STOP GENERAL", "STOP ERROR", "DESINCRONIZADA", "OFF", "OFFLINE");
                 return Integer.compare(order.indexOf(s1), order.indexOf(s2));
             });
 
@@ -387,13 +412,8 @@ public class MaquinaController implements Initializable {
 
             Integer maquinaVal = (Integer) colMaquina.getCellData(maquina);
             String articuloVal = (String) colArticulo.getCellData(maquina);
-
-            Double unidadesVal = (Double) colDocenas.getCellData(maquina);
-            Double targetVal = (Double) colTarget.getCellData(maquina);
-            // only one decimal point
-            unidadesVal = unidadesVal == null ? 0.0 : Math.round(unidadesVal * 10.0) / 10.0;
-            targetVal = targetVal == null ? 0.0 : Math.round(targetVal * 10.0) / 10.0;
-
+            Integer unidadesVal = (Integer) colUnidades.getCellData(maquina);
+            Integer targetVal = (Integer) colTarget.getCellData(maquina);
             String tiempoVal = (String) colTiempo.getCellData(maquina);
             String estadoVal = (String) colEstado.getCellData(maquina);
             
