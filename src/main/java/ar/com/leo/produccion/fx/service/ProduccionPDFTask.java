@@ -15,21 +15,23 @@ import javafx.concurrent.Task;
 
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 
-public class MaquinaPDFTask extends Task<Void> {
+public class ProduccionPDFTask extends Task<Void> {
 
     private final List<List<String>> data;
+    private final String title;
     private static PDType1Font textFont;
     private static int textFontSize;
 
-    public MaquinaPDFTask(List<List<String>> data) {
+    public ProduccionPDFTask(List<List<String>> data, String title) {
         this.data = data;
+        this.title = title;
         textFont = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
         textFontSize = 10;
     }
 
     @Override
     protected Void call() throws Exception {
-        createPDF(data);
+        createPDF(data, title);
         return null;
     }
 
@@ -44,7 +46,7 @@ public class MaquinaPDFTask extends Task<Void> {
      * @throws NullPointerException if data is null.
      * @throws IndexOutOfBoundsException if any inner list in data has fewer than 6 elements.
      */
-    public static void createPDF(List<List<String>> data) throws IOException {
+    public static void createPDF(List<List<String>> data, String title) throws IOException {
         if (data == null) {
             throw new NullPointerException("Data to be written to the PDF cannot be null.");
         }
@@ -61,7 +63,7 @@ public class MaquinaPDFTask extends Task<Void> {
         int numberOfColumns = 6;
 
         // Fixed headers.
-        String[] headers = {"Maquina", "Artículo", "Un. Producidas", "Target", "Tiempo Estimado", "Estado"};
+        String[] headers = {"Artículo", "Unidades", "Docenas", "En producción"};
         
         // Define column widths as fractions of the table width.
         float[] colWidths = calcColWidths(data, headers, textFont, textFontSize, tableWidth);
@@ -73,9 +75,9 @@ public class MaquinaPDFTask extends Task<Void> {
 
         // Draw the title at the top of the first page.
         // Setup title text: "CARGA DE MAQUINAS AL " with current date and time.
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        String currentDateTime = LocalDateTime.now().format(formatter);
-        String title = "CARGA DE MAQUINAS AL " + currentDateTime;
+        // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        // String currentDateTime = LocalDateTime.now().format(formatter);
+
         float titleFontSize = 16;
         // Use a bold font for the title.
         PDType1Font titleFont = new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
@@ -125,9 +127,9 @@ public class MaquinaPDFTask extends Task<Void> {
                 float textWidth = textFont.getStringWidth(cellValue) / 1000 * 12; // Font size 12
                 float cellCenterX;
 
-                if (i == 1) { 
+                if (title.contains("HOMBRE") && i == 0) { 
                     // Left-aligned but slightly shifted to simulate center alignment
-                    cellCenterX = textX + 10; // Small left padding to prevent sticking to edge
+                    cellCenterX = textX + 50; // Small left padding to prevent sticking to edge
                 } else { 
                     // Other columns: Fully centered
                     cellCenterX = textX + (colWidths[i] - textWidth) / 2;
@@ -151,10 +153,10 @@ public class MaquinaPDFTask extends Task<Void> {
         
         // Close content stream and save the document.
         contentStream.close();
-        document.save("maquinas.pdf");
+        document.save("produccion.pdf");
         document.close();
 
-        File pdfFile = new File("maquinas.pdf");
+        File pdfFile = new File("produccion.pdf");
         if (Desktop.isDesktopSupported()) {
             Desktop desktop = Desktop.getDesktop();
             try {

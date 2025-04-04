@@ -437,7 +437,7 @@ public class MaquinaController implements Initializable {
         pdfTask.setOnRunning(event -> {
             logTextArea.setText("Exportando...");
         });
-        pdfTask.setOnSucceeded(event -> logTextArea.setText("Pdf generado en: " + System.getProperty("user.dir") + "\\Produccion.xls"));
+        pdfTask.setOnSucceeded(event -> logTextArea.setText("Pdf generado en: " + System.getProperty("user.dir") + "\\produccion.pdf"));
         Thread thread = new Thread(pdfTask);
         thread.setDaemon(true);
         thread.start();

@@ -166,15 +166,15 @@
       <ProgressIndicator fx:id="progress" layoutX="950.0" layoutY="350.0" prefHeight="500.0"
          prefWidth="500.0" visible="false" />
       <Button layoutX="93.0" layoutY="394.0" mnemonicParsing="false"
-         onAction="#handleButtonExportar" prefHeight="65.0" prefWidth="228.0" text="Exportar"
-         textFill="#0bb711">
+         onAction="#handleButtonPDF" prefHeight="65.0" prefWidth="228.0" text="Exportar"
+         textFill="black">
          <font>
             <Font name="System Bold" size="21.0" />
          </font>
          <graphic>
             <ImageView>
                <image>
-                  <Image url="@../images/icons8-ms-excel-48.png" />
+                  <Image url="@../images/pdf.png" />
                </image>
             </ImageView>
          </graphic>

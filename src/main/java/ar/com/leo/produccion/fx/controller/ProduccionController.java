@@ -2,6 +2,7 @@ package ar.com.leo.produccion.fx.controller;
 
 import ar.com.leo.produccion.fx.service.ArticuloProducidoTask;
 import ar.com.leo.produccion.fx.service.ExcelTask;
+import ar.com.leo.produccion.fx.service.ProduccionPDFTask;
 import ar.com.leo.produccion.jdbc.DataSourceConfig;
 import ar.com.leo.produccion.model.ArticuloProducido;
 import javafx.application.Platform;
@@ -35,6 +36,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -73,6 +75,7 @@ public class ProduccionController implements Initializable {
     private ObservableList<ArticuloProducido> articulosProducidosList;
     private ArticuloProducidoTask articuloProducidoTask;
     private ExcelTask excelTask;
+    private ProduccionPDFTask pdfTask;
 
     final DateTimeFormatter fromDateFormatter = DateTimeFormatter.ofPattern("[dd/MM/yyyy][dd/M/yyyy][dd/M/yy][dd/MM/yy][dd-MM-yyyy][dd-MM-yy][ddMMyyyy][ddMMyy][ddMyy]");
     final DateTimeFormatter toDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -366,6 +369,48 @@ public class ProduccionController implements Initializable {
             thread.setDaemon(true);
             thread.start();
         }
+    }
+
+    @FXML
+    private void handleButtonPDF(ActionEvent actionEvent) throws IOException {
+        String title = sectorComboBox.getSelectionModel().getSelectedItem() 
+            + "             " 
+            + mensajeLabel.getText();
+        mensajeLabel.setText(null);
+
+        List<List<String>> data = new ArrayList<>();
+
+        ObservableList<ArticuloProducido> articulos = articulosTableView.getItems();
+        for (ArticuloProducido art : articulos) {
+            List<String> row = new ArrayList<>();
+
+            String articuloVal = (String) colArticulo.getCellData(art);
+            Integer unidadesVal = (Integer) colUnidades.getCellData(art);
+            Double docenasVal = (Double) colDocenas.getCellData(art);
+            String produciendoVal = (String) colProduciendo.getCellData(art);
+
+            row.add(articuloVal);
+            row.add(String.valueOf(unidadesVal));
+            row.add(String.valueOf(docenasVal));
+            row.add(produciendoVal);
+
+            data.add(row);
+        }
+
+        pdfTask = new ProduccionPDFTask(data, title);
+        
+        pdfTask.setOnFailed(event -> {
+            mensajeLabel.setText("Error: No se ha podido exportar.");
+            event.getSource().getException().printStackTrace();
+        });
+
+        pdfTask.setOnRunning(event -> {
+            mensajeLabel.setText("Exportando...");
+        });
+        pdfTask.setOnSucceeded(event -> mensajeLabel.setText("Pdf generado en: " + System.getProperty("user.dir") + "\\produccion.pdf"));
+        Thread thread = new Thread(pdfTask);
+        thread.setDaemon(true);
+        thread.start();
     }
 
     @FXML
