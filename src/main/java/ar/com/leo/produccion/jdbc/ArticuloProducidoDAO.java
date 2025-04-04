@@ -93,24 +93,35 @@ public class ArticuloProducidoDAO {
                 while (rs.next()) {
                     if (rs.getInt("Unidades") > 0) {
                         final ArticuloProducido articuloProducido = new ArticuloProducido();
+
                         final String styleCode = rs.getString("StyleCode").trim();
+                        String art = styleCode.substring(0, 5);
+                        String talle = "";
+                        String color = "";
+
                         if (styleCode.length() > 6) {
-                            String art = styleCode.substring(0, 5);
-                            String talle;
+
                             if (styleCode.charAt(5) == '9') {
-                                talle = "PARCHE";
+                                talle = "PA";
+                            } else if (styleCode.charAt(5) == '8') {
+                                talle = "T.1 (U)";
                             } else {
                                 talle = "T." + styleCode.charAt(5);
                             }
-                            String color = styleCode.substring(6, 8);
+                            
+                            color = styleCode.substring(6, 8);
                             if (styleCode.length() > 8 && styleCode.startsWith("02", 14)) // .2
-                                articuloProducido.setStyleCode(art + " " + talle + " " + color + " (.2)");
+                                articuloProducido.setStyleCode(art + "  " +  talle + "  " + color + "  (.2)");
                             else if (styleCode.length() > 8 && styleCode.startsWith("06", 14)) // .6
-                                articuloProducido.setStyleCode(art + " " + talle + " " + color + " (.6)");
+                                articuloProducido.setStyleCode(art + "  " + talle + "  " + color + "  (.6)");
                             else if (styleCode.length() > 8 && styleCode.startsWith("08", 14)) // .8
-                                articuloProducido.setStyleCode(art + " " + talle + " " + color + " (.8)");
+                                articuloProducido.setStyleCode(art + "  " + talle + "  " + color + "  (.8)");
                             else
-                                articuloProducido.setStyleCode(art + " " + talle + " " + color);
+                                articuloProducido.setStyleCode(art + "  " + talle + "  " + color);
+
+                            articuloProducido.setNumero(art);
+                            articuloProducido.setColor(color);
+
                             int unidades = rs.getInt("Unidades");
                             if (styleCode.contains("#")) {
                                 unidades *= 2;

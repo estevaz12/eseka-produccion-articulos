@@ -246,6 +246,7 @@ public class ProduccionController implements Initializable {
 //                event.getSource().getException().printStackTrace();
                 // Set error message
                 mensajeLabel.setText("Error: " + event.getSource().getException().getMessage());
+                System.out.println("Error: " + event.getSource().getException().getMessage());
             });
 
             // Set on running handler
