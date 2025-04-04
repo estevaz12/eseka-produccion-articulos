@@ -13,6 +13,7 @@ public class Maquina {
 //    private Integer functionKey;
     private Integer roomCode;
     private String styleCode;
+    private String punto;
     //    private Integer lastTimeOn;
 //    private Integer lastTimeOff;
     private Integer pieces;
@@ -82,6 +83,14 @@ public class Maquina {
 
     public void setStyleCode(String styleCode) {
         this.styleCode = styleCode;
+    }
+
+    public String getPunto() {
+        return punto;
+    }
+
+    public void setPunto(String punto) {
+        this.punto = punto;
     }
 
     public Integer getPieces() {

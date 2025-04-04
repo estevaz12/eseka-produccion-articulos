@@ -122,8 +122,17 @@ public class MaquinaPDFTask extends Task<Void> {
             float textY = yPosition + rowHeight / 2 - 4; // Adjust text vertically within the cell.
             for (int i = 0; i < row.size() && i < numberOfColumns; i++) {
                 String cellValue = row.get(i) == null ? "" : row.get(i);
-                float textWidth = textFont.getStringWidth(cellValue) / 1000 * textFontSize; // Font size for data rows
-                float cellCenterX = textX + (colWidths[i] - textWidth) / 2; // Calculate center for cell
+                float textWidth = textFont.getStringWidth(cellValue) / 1000 * 12; // Font size 12
+                float cellCenterX;
+
+                if (i == 1) { 
+                    // Left-aligned but slightly shifted to simulate center alignment
+                    cellCenterX = textX + 10; // Small left padding to prevent sticking to edge
+                } else { 
+                    // Other columns: Fully centered
+                    cellCenterX = textX + (colWidths[i] - textWidth) / 2;
+}
+
                 contentStream.beginText();
                 contentStream.newLineAtOffset(cellCenterX, textY);
                 contentStream.showText(cellValue);

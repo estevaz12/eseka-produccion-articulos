@@ -92,8 +92,15 @@ public class MaquinaController implements Initializable {
             colArticulo.setCellValueFactory(param -> {
                 SimpleStringProperty articulo = new SimpleStringProperty();
                 String styleCode = param.getValue().getStyleCode();
+                String punto = param.getValue().getPunto();
+
                 if (styleCode.length() > 6) {
-                    String art = styleCode.substring(0, 5);
+                    String art = "    " + styleCode.substring(0, 5);
+
+                    if (punto != null) {
+                        art += "." + punto;
+                    }
+
                     String talle;
                     if (styleCode.charAt(5) == '9') {
                         talle = "PA";
@@ -102,15 +109,16 @@ public class MaquinaController implements Initializable {
                     } else {
                         talle = "T." + styleCode.charAt(5);
                     }
+
                     String color = styleCode.substring(6, 8);
                     if (styleCode.length() > 8 && styleCode.startsWith("02", 14)) // .2
-                        articulo.set(art + " " + talle + " " + color + " (.2)");
+                        articulo.set(art + "    " +  talle + "    " + color + "  (.2)");
                     else if (styleCode.length() > 8 && styleCode.startsWith("06", 14)) // .6
-                        articulo.set(art + " " + talle + " " + color + " (.6)");
+                        articulo.set(art + "    " + talle + "    " + color + "  (.6)");
                     else if (styleCode.length() > 8 && styleCode.startsWith("08", 14)) // .8
-                        articulo.set(art + " " + talle + " " + color + " (.8)");
+                        articulo.set(art + "    " + talle + "    " + color + "  (.8)");
                     else
-                        articulo.set(art + " " + talle + " " + color);
+                        articulo.set(art + "    " + talle + "    " + color);
                 }
 
                 return articulo;

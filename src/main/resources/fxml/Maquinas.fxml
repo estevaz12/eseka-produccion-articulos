@@ -22,7 +22,8 @@
          AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="70.0">
          <columns>
             <TableColumn fx:id="colMaquina" editable="false" prefWidth="150.0" text="Máquina" />
-            <TableColumn fx:id="colArticulo" editable="false" prefWidth="300.0" text="Artículo" />
+            <TableColumn id="columnaArticuloMaq" fx:id="colArticulo" editable="false"
+               prefWidth="300.0" text="Artículo" />
             <TableColumn fx:id="colDocenas" editable="false" prefWidth="200.0"
                text="Doc. producidas" />
             <TableColumn fx:id="colTarget" editable="false" prefWidth="150.0" text="Target" />
