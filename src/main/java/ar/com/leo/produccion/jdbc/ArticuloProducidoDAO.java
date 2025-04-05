@@ -116,7 +116,7 @@ public class ArticuloProducidoDAO {
                                     articuloProducido.setStyleCode(art + " " + talle + " " + color + " (.8)");
                                 else
                                     articuloProducido.setStyleCode(art + " " + talle + " " + color);
-                            } else {
+                            } else { // HOMBRE
                                 if (styleCode.charAt(5) == '9') {
                                     talle = "PA";
                                 } else if (styleCode.charAt(5) == '8') {
@@ -127,13 +127,13 @@ public class ArticuloProducidoDAO {
                                 
                                 color = styleCode.substring(6, 8);
                                 if (styleCode.length() > 8 && styleCode.startsWith("02", 14)) // .2
-                                    articuloProducido.setStyleCode(art + "  " +  talle + "  " + color + "  (.2)");
+                                    articuloProducido.setStyleCode(art + "    " +  talle + "    " + color + "  (.2)");
                                 else if (styleCode.length() > 8 && styleCode.startsWith("06", 14)) // .6
-                                    articuloProducido.setStyleCode(art + "  " + talle + "  " + color + "  (.6)");
+                                    articuloProducido.setStyleCode(art + "    " + talle + "    " + color + "  (.6)");
                                 else if (styleCode.length() > 8 && styleCode.startsWith("08", 14)) // .8
-                                    articuloProducido.setStyleCode(art + "  " + talle + "  " + color + "  (.8)");
+                                    articuloProducido.setStyleCode(art + "    " + talle + "    " + color + "  (.8)");
                                 else
-                                    articuloProducido.setStyleCode(art + "  " + talle + "  " + color);
+                                    articuloProducido.setStyleCode(art + "    " + talle + "    " + color);
 
                                 articuloProducido.setNumero(art);
                                 articuloProducido.setColor(color);

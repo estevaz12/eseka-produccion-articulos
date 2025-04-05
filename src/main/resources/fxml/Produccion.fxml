@@ -87,10 +87,10 @@
          prefWidth="1017.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="10.0"
          AnchorPane.leftAnchor="516.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="70.0">
          <columns>
-            <TableColumn id="columnaArticulo" fx:id="colArticulo" editable="false" prefWidth="300.0"
+            <TableColumn id="columnaArticulo" fx:id="colArticulo" editable="false" prefWidth="325.0"
                text="Artículo" />
-            <TableColumn fx:id="colUnidades" editable="false" prefWidth="150.0" text="Unidades" />
-            <TableColumn fx:id="colDocenas" editable="false" prefWidth="150.0" text="Docenas" />
+            <TableColumn fx:id="colUnidades" editable="false" prefWidth="130.0" text="Unidades" />
+            <TableColumn fx:id="colDocenas" editable="false" prefWidth="130.0" text="Docenas" />
             <TableColumn fx:id="colProduciendo" editable="false" prefWidth="400.0"
                text="En producción" />
          </columns>
