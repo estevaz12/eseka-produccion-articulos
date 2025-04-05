@@ -58,10 +58,10 @@ public class ProduccionPDFTask extends Task<Void> {
         float rowHeight = 20;
         // Compute table width based on margin.
         float tableWidth = pageSize.getWidth() - 2 * margin;
-        int numberOfColumns = 6;
 
         // Fixed headers.
         String[] headers = {"Artículo", "Unidades", "Docenas", "En producción"};
+        int numberOfColumns = headers.length;
         
         // Define column widths as fractions of the table width.
         float[] colWidths = calcColWidths(data, headers, textFont, textFontSize, tableWidth);
@@ -122,7 +122,7 @@ public class ProduccionPDFTask extends Task<Void> {
             float textY = yPosition + rowHeight / 2 - 4; // Adjust text vertically within the cell.
             for (int i = 0; i < row.size() && i < numberOfColumns; i++) {
                 String cellValue = row.get(i) == null ? "" : row.get(i);
-                float textWidth = textFont.getStringWidth(cellValue) / 1000 * 12; // Font size 12
+                float textWidth = textFont.getStringWidth(cellValue) / 1000 * textFontSize;
                 float cellCenterX;
 
                 if (title.contains("HOMBRE") && i == 0) { 

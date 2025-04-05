@@ -71,7 +71,7 @@
             <Font name="System Italic" size="14.0" />
          </font>
       </TextArea>
-      <Button layoutX="473.0" layoutY="6.0" mnemonicParsing="false" onAction="#buscarPdf"
+      <Button layoutX="365.0" layoutY="6.0" mnemonicParsing="false" onAction="#buscarPdf"
          prefHeight="58.0" prefWidth="125.0" text="Subir" textFill="#021b8c">
          <font>
             <Font name="System Bold" size="17.0" />
@@ -84,41 +84,54 @@
             </ImageView>
          </graphic>
       </Button>
-      <Label layoutX="260.0" layoutY="8.0" prefHeight="22.0" maxWidth="125.0"
+      <Label layoutX="150.0" layoutY="8.0" prefHeight="22.0" maxWidth="125.0"
          text="Ubicación (.pdf):" wrapText="true">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <TextField fx:id="ubicacionPdf" editable="false" layoutX="260.0" layoutY="32.0"
+      <TextField fx:id="ubicacionPdf" editable="false" layoutX="150.0" layoutY="32.0"
          prefHeight="31.0" prefWidth="208.0" promptText="C:\Programada.pdf">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <TextField fx:id="buscador" layoutX="608.0" layoutY="32.0" onKeyTyped="#buscarArticulo"
+      <TextField fx:id="buscador" layoutX="500.0" layoutY="32.0" onKeyTyped="#buscarArticulo"
          prefHeight="31.0" prefWidth="200.0" promptText="Buscar artículo...">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <CheckBox fx:id="produccionCheckBox" layoutX="609.0" layoutY="8.0" mnemonicParsing="false"
+      <CheckBox fx:id="produccionCheckBox" layoutX="500.0" layoutY="8.0" mnemonicParsing="false"
          onAction="#enProduccion" prefHeight="22.0" prefWidth="186.0" text="Sólo tejiendo">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </CheckBox>
-      <Button layoutX="1010.0" layoutY="6.0" mnemonicParsing="false" onAction="#imprimir"
-         prefHeight="58.0" prefWidth="58.0">
+      <Button layoutX="710.0" layoutY="6.0" mnemonicParsing="false" onAction="#handleButtonPDF"
+         prefHeight="58.0" prefWidth="200.0" text="Exportar todo" textFill="#021b8c">
+         <font>
+            <Font name="System Bold" size="17.0" />
+         </font>
          <graphic>
+            <ImageView fitHeight="40.0" fitWidth="40.0">
+               <image>
+                  <Image url="@../images/pdf.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <Button layoutX="920.0" layoutY="6.0" mnemonicParsing="false" onAction="#imprimir"
+         prefHeight="58.0" prefWidth="160.0" text="Hasta 07:00">
+         <!-- <graphic>
             <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/print.png" />
                </image>
             </ImageView>
-         </graphic>
+         </graphic> -->
          <font>
-            <Font name="System Bold" size="12.0" />
+            <Font name="System Bold" size="17.0" />
          </font>
       </Button>
    </children>

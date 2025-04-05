@@ -1,5 +1,6 @@
 package ar.com.leo.produccion.fx.controller;
 
+import ar.com.leo.produccion.fx.service.ProgramadaPDFTask;
 import ar.com.leo.produccion.fx.service.ProgramadaService;
 import ar.com.leo.produccion.model.ArticuloProducido;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -22,6 +23,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
@@ -30,10 +32,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class ProgramadaController implements Initializable {
 
@@ -67,6 +73,8 @@ public class ProgramadaController implements Initializable {
     private DateTimeFormatter formatter;
     private Set<String> articulosSinPunto;
     private Set<String> articulosFaltantesProgramada;
+
+    private ProgramadaPDFTask pdfTask;
 
     public void initialize(URL url, ResourceBundle rb) {
 //        BasicConfigurator.configure(); // configure Log4j
@@ -125,18 +133,8 @@ public class ProgramadaController implements Initializable {
 
         colHorario.setCellValueFactory(param -> {
             final SimpleStringProperty horario = new SimpleStringProperty();
-            if (param.getValue().getProducir() != null && param.getValue().getProducir() > 0 && param.getValue().getProduciendo().contains("SI") && param.getValue().getIdealCycle() > 0) {
-                final long segundos = param.getValue().getIdealCycle() * (param.getValue().getProducir() * 24 - param.getValue().getUnidades())
-                        / (param.getValue().getMaquinas() != null ? param.getValue().getMaquinas().length : 1);
-                final Duration duration = Duration.ofSeconds(segundos);
-
-                if (segundos > 0) {
-                    // Adding duration to the current time
-                    final LocalDateTime futureTime = LocalDateTime.now().plus(duration);
-                    horario.set(futureTime.format(formatter));
-                } else {
-                    horario.set("-");
-                }
+            if (param.getValue().getHorario() != null) {
+                horario.set(param.getValue().getHorario().format(formatter));
             } else {
                 horario.set("-");
             }
@@ -241,6 +239,31 @@ public class ProgramadaController implements Initializable {
         }
     }
 
+     private void setHorarios(List<ArticuloProducido> articulos) {
+        for (ArticuloProducido art : articulos) {
+            System.out.println(art.toString());
+
+            if (art.getProducir() != null && art.getProducir() > 0 && art.getProduciendo().contains("SI") && art.getIdealCycle() > 0) {
+                final long segundos = art.getIdealCycle() * (art.getProducir() * 24 - art.getUnidades())
+                        / (art.getMaquinas() != null ? art.getMaquinas().length : 1);
+                final Duration duration = Duration.ofSeconds(segundos);
+
+                if (segundos > 0) {
+                    // Adding duration to the current time
+                    final LocalDateTime futureTime = LocalDateTime.now().plus(duration);
+                    art.setHorario(futureTime);
+                    System.out.println("Articulo: " + art.getNumero() + " - Horario: " + art.getHorario());
+                } else {
+                    art.setHorario(null);
+                }
+            } else {
+                art.setHorario(null);
+            }
+        }
+    }
+
+
+
     // buscador
     @FXML
     public void buscarArticulo(KeyEvent event) {
@@ -276,73 +299,146 @@ public class ProgramadaController implements Initializable {
     }
 
     @FXML
-    public void imprimir(ActionEvent event) {
+    private void handleButtonPDF(ActionEvent actionEvent) throws IOException {
+        logTextArea.setText(null);
 
-        if (articulosTableView.getItems().size() > 0) {
-            // Create a PrinterJob
-            final PrinterJob job = PrinterJob.createPrinterJob();
-            if (job == null) {
-                logTextArea.setStyle("-fx-text-fill: red;");
-                logTextArea.setText("No se encontraron impresoras.\n");
-                return;
-            }
+        List<List<String>> data = new ArrayList<>();
 
-            // Get the default printer
-            final Printer printer = Printer.getDefaultPrinter();
+        ObservableList<ArticuloProducido> articulos = articulosTableView.getItems();
+        for (ArticuloProducido art : articulos) {
+            List<String> row = new ArrayList<>();
 
-            // Customize the page layout
-            final PageLayout pageLayout = printer.createPageLayout(
-                    Paper.A4, // Default paper size
-                    PageOrientation.LANDSCAPE, // Set orientation (PORTRAIT or LANDSCAPE)
-                    Printer.MarginType.HARDWARE_MINIMUM // Set to minimum margins
-            );
-
-            // Display the print dialog to allow users to choose settings
-            boolean proceed = job.showPrintDialog(articulosTableView.getScene().getWindow());
-            if (!proceed) {
-                return;
-            }
-
-            // Set the job's page layout
-            job.getJobSettings().setPageLayout(pageLayout);
-
-            // Create a label to show the date at the bottom
-//            Label dateLabel = new Label(formatter.format(LocalDateTime.now()));
-//            dateLabel.setStyle("-fx-font-size: 10px; -fx-alignment: center;");
-//            dateLabel.setPrefWidth(pageLayout.getPrintableWidth());
-//            dateLabel.setPadding(new Insets(50, 0, 0, 0));
-
-            // Combine the table and the date
-//            VBox printableContent = new VBox(articulosTableView, dateLabel);
-//            printableContent.setPrefHeight(pageLayout.getPrintableHeight());
-//            printableContent.setPrefWidth(pageLayout.getPrintableWidth());
-////            printableContent.setAutoSizeChildren(false);
-//            printableContent.setAlignment(Pos.CENTER);
-
-            // Calculate the scale factor to fit the TableView to the page
-            double scaleX = pageLayout.getPrintableWidth() / articulosTableView.getBoundsInParent().getWidth();
-            double scaleY = pageLayout.getPrintableHeight() / articulosTableView.getBoundsInParent().getHeight();
-            double scale = Math.min(scaleX, scaleY);
-
-            // Apply the scaling transformation
-            Scale scaleTransform = new Scale(scale, scale);
-            articulosTableView.getTransforms().add(scaleTransform);
-
-            // Print the table
-            boolean success = job.printPage(pageLayout, articulosTableView);
-
-            // Reset the table's transformations and height
-            articulosTableView.getTransforms().remove(scaleTransform);
-            if (success) {
-                job.endJob();
+            String articuloVal = (String) colArticulo.getCellData(art);
+            Integer talleVal = (Integer) colTalle.getCellData(art);
+            Integer producirVal = (Integer) colProducir.getCellData(art);
+            Double producidoVal = (Double) colProducido.getCellData(art);
+            String produciendoVal = (String) colProduciendo.getCellData(art);
+            String tiempoVal = (String) colTiempo.getCellData(art);
+            String horarioVal = (String) colHorario.getCellData(art);
+            
+            row.add(articuloVal);
+            row.add(String.valueOf(talleVal));
+            if (producirVal == null) {
+                row.add("");
             } else {
-                logTextArea.setStyle("-fx-text-fill: red;");
-                logTextArea.setText("Error al imprimir.\n");
+                row.add(String.valueOf(producirVal));
             }
-        } else {
-            logTextArea.setStyle("-fx-text-fill: red;");
-            logTextArea.setText("No hay ninguna tabla para imprimir.\n");
+            row.add(String.valueOf(producidoVal));
+            row.add(produciendoVal);
+            row.add(tiempoVal);
+            row.add(horarioVal);
+
+            data.add(row);
         }
+
+        pdfTask = new ProgramadaPDFTask(data);
+        
+        pdfTask.setOnFailed(event -> {
+            logTextArea.setText("Error: No se ha podido exportar.");
+            event.getSource().getException().printStackTrace();
+        });
+
+        pdfTask.setOnRunning(event -> {
+            logTextArea.setText("Exportando...");
+        });
+        pdfTask.setOnSucceeded(event -> logTextArea.setText("Pdf generado en: " + System.getProperty("user.dir") + "\\produccion.pdf"));
+        Thread thread = new Thread(pdfTask);
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    @FXML
+    public void imprimir(ActionEvent event) throws IOException {
+        // filter table to show only items with an horario before the next day at 07:00 am
+        final ObservableList<ArticuloProducido> items = articulosTableView.getItems();
+
+        final LocalDateTime now = LocalDateTime.now();
+        final LocalDateTime nextDay0700 = now.plusDays(1).withHour(7).withMinute(0).withSecond(0);
+        final List<ArticuloProducido> filteredItems = new ArrayList<>();
+
+        for (ArticuloProducido articulo : items) {
+            // System.out.println("Articulo: " + articulo.getNumero() + " | Horario: " + articulo.getHorario());
+
+            if (articulo.getHorario() != null) {
+                final LocalDateTime horario = articulo.getHorario();
+                if (horario.isBefore(nextDay0700)) {
+                    filteredItems.add(articulo);
+                }
+            } else if (articulo.getProduciendo().contains("SI")) {
+                filteredItems.add(articulo);
+            }
+        }
+
+        items.setAll(filteredItems);
+        articulosTableView.setItems(items);
+
+        handleButtonPDF(event);
+
+//         if (articulosTableView.getItems().size() > 0) {
+//             // Create a PrinterJob
+//             final PrinterJob job = PrinterJob.createPrinterJob();
+//             if (job == null) {
+//                 logTextArea.setStyle("-fx-text-fill: red;");
+//                 logTextArea.setText("No se encontraron impresoras.\n");
+//                 return;
+//             }
+
+//             // Get the default printer
+//             final Printer printer = Printer.getDefaultPrinter();
+
+//             // Customize the page layout
+//             final PageLayout pageLayout = printer.createPageLayout(
+//                     Paper.A4, // Default paper size
+//                     PageOrientation.LANDSCAPE, // Set orientation (PORTRAIT or LANDSCAPE)
+//                     Printer.MarginType.HARDWARE_MINIMUM // Set to minimum margins
+//             );
+
+//             // Display the print dialog to allow users to choose settings
+//             boolean proceed = job.showPrintDialog(articulosTableView.getScene().getWindow());
+//             if (!proceed) {
+//                 return;
+//             }
+
+//             // Set the job's page layout
+//             job.getJobSettings().setPageLayout(pageLayout);
+
+//             // Create a label to show the date at the bottom
+// //            Label dateLabel = new Label(formatter.format(LocalDateTime.now()));
+// //            dateLabel.setStyle("-fx-font-size: 10px; -fx-alignment: center;");
+// //            dateLabel.setPrefWidth(pageLayout.getPrintableWidth());
+// //            dateLabel.setPadding(new Insets(50, 0, 0, 0));
+
+//             // Combine the table and the date
+// //            VBox printableContent = new VBox(articulosTableView, dateLabel);
+// //            printableContent.setPrefHeight(pageLayout.getPrintableHeight());
+// //            printableContent.setPrefWidth(pageLayout.getPrintableWidth());
+// ////            printableContent.setAutoSizeChildren(false);
+// //            printableContent.setAlignment(Pos.CENTER);
+
+//             // Calculate the scale factor to fit the TableView to the page
+//             double scaleX = pageLayout.getPrintableWidth() / articulosTableView.getBoundsInParent().getWidth();
+//             double scaleY = pageLayout.getPrintableHeight() / articulosTableView.getBoundsInParent().getHeight();
+//             double scale = Math.min(scaleX, scaleY);
+
+//             // Apply the scaling transformation
+//             Scale scaleTransform = new Scale(scale, scale);
+//             articulosTableView.getTransforms().add(scaleTransform);
+
+//             // Print the table
+//             boolean success = job.printPage(pageLayout, articulosTableView);
+
+//             // Reset the table's transformations and height
+//             articulosTableView.getTransforms().remove(scaleTransform);
+//             if (success) {
+//                 job.endJob();
+//             } else {
+//                 logTextArea.setStyle("-fx-text-fill: red;");
+//                 logTextArea.setText("Error al imprimir.\n");
+//             }
+//         } else {
+//             logTextArea.setStyle("-fx-text-fill: red;");
+//             logTextArea.setText("No hay ninguna tabla para imprimir.\n");
+//         }
     }
 
     private void filtrar(TextField buscador, CheckBox produccionCheckBox) {
@@ -399,7 +495,9 @@ public class ProgramadaController implements Initializable {
 
             service.setOnSucceeded(e -> {
                 if (service.getValue() != null) {
-                    this.articulosProducidosList = FXCollections.observableArrayList(service.getValue());
+                    List<ArticuloProducido> articulosProducidos = service.getValue();
+                    setHorarios(articulosProducidos);
+                    this.articulosProducidosList = FXCollections.observableArrayList(articulosProducidos);
                     articulosTableView.setItems(this.articulosProducidosList);
                     // Sort the table by the desired column in descending order
 //                    articulosTableView.sort();
