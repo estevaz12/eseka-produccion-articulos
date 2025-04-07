@@ -125,13 +125,14 @@ public class MaquinaPDFTask extends Task<Void> {
                 float textWidth = textFont.getStringWidth(cellValue) / 1000 * textFontSize;
                 float cellCenterX;
 
-                if (i == 1) { 
-                    // Left-aligned but slightly shifted to simulate center alignment
-                    cellCenterX = textX + 20; // Small left padding to prevent sticking to edge
-                } else { 
-                    // Other columns: Fully centered
-                    cellCenterX = textX + (colWidths[i] - textWidth) / 2;
-                }
+                // if (i == 1) { 
+                //     // Left-aligned but slightly shifted to simulate center alignment
+                //     cellCenterX = textX + 20; // Small left padding to prevent sticking to edge
+                // } else { 
+                //     // Other columns: Fully centered
+                //     cellCenterX = textX + (colWidths[i] - textWidth) / 2;
+                // }
+                cellCenterX = textX + (colWidths[i] - textWidth) / 2;
 
                 contentStream.beginText();
                 contentStream.newLineAtOffset(cellCenterX, textY);

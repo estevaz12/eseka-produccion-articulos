@@ -125,13 +125,16 @@ public class ProduccionPDFTask extends Task<Void> {
                 float textWidth = textFont.getStringWidth(cellValue) / 1000 * textFontSize;
                 float cellCenterX;
 
-                if (title.contains("HOMBRE") && i == 0) { 
-                    // Left-aligned but slightly shifted to simulate center alignment
-                    cellCenterX = textX + 50; // Small left padding to prevent sticking to edge
-                } else { 
-                    // Other columns: Fully centered
-                    cellCenterX = textX + (colWidths[i] - textWidth) / 2;
-                }
+                // if (title.contains("HOMBRE") && i == 0) { 
+                //     // Left-aligned but slightly shifted to simulate center alignment
+                //     cellCenterX = textX + 50; // Small left padding to prevent sticking to edge
+                // } else { 
+                //     // Other columns: Fully centered
+                //     cellCenterX = textX + (colWidths[i] - textWidth) / 2;
+                // }
+
+                cellCenterX = textX + (colWidths[i] - textWidth) / 2;
+
 
                 contentStream.beginText();
                 contentStream.newLineAtOffset(cellCenterX, textY);
