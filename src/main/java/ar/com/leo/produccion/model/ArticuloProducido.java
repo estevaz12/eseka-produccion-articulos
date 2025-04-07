@@ -1,5 +1,6 @@
 package ar.com.leo.produccion.model;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 public class ArticuloProducido {
@@ -15,6 +16,7 @@ public class ArticuloProducido {
     private int idealCycle;
     private Integer producir;
     private String[] maquinas;
+    private LocalDateTime horario;
 
     @Override
     public String toString() {
@@ -27,6 +29,7 @@ public class ArticuloProducido {
                 ", punto=" + punto +
                 ", producir=" + producir +
                 ", maquinas=" + Arrays.toString(maquinas) +
+                ", horario='" + horario +
                 '}';
     }
 
@@ -116,6 +119,14 @@ public class ArticuloProducido {
 
     public void setMaquinas(String[] maquinas) {
         this.maquinas = maquinas;
+    }
+
+    public LocalDateTime getHorario() {
+        return horario;
+    }
+
+    public void setHorario(LocalDateTime horario) {
+        this.horario = horario;
     }
 
 }

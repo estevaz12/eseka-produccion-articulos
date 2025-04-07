@@ -24,21 +24,21 @@ public class MaquinaTask extends Task<List<Maquina>> {
 
     @Override
     protected List<Maquina> call() throws SQLException {
-        List<Maquina> maquinas = MaquinaDAO.obtenerMaquinas(this.roomCode);
-
-        final List<ArticuloColor> articulosColores = ColorDAO.obtenerArticulosColores();
-        final List<ArticuloProducido> articulosProducidos = ProgramadaArticuloProducidoDAO.obtenerProduccion();
-        // System.out.println("RESULTADO: " + obtenerResultado(articulosColores, articulosProducidos, articulosProgramada));
-
-        List<ArticuloProducido> articulosPunto = obtenerResultado(articulosColores, articulosProducidos);
-        // System.out.println(articulosPunto.stream()
-        //         .map(Object::toString)
-        //         .collect(Collectors.joining("\n")));
-        HashMap<Integer, String> maquinasConPunto = getMaquinasConPunto(articulosPunto);
-
-        setArtConPunto(maquinas, maquinasConPunto);
-
-        return maquinas;
+            List<Maquina> maquinas = MaquinaDAO.obtenerMaquinas(this.roomCode);
+    
+            final List<ArticuloColor> articulosColores = ColorDAO.obtenerArticulosColores();
+            final List<ArticuloProducido> articulosProducidos = ProgramadaArticuloProducidoDAO.obtenerProduccion();
+            // System.out.println("RESULTADO: " + obtenerResultado(articulosColores, articulosProducidos, articulosProgramada));
+    
+            List<ArticuloProducido> articulosPunto = obtenerResultado(articulosColores, articulosProducidos);
+            // System.out.println(articulosPunto.stream()
+            //         .map(Object::toString)
+            //         .collect(Collectors.joining("\n")));
+            HashMap<Integer, String> maquinasConPunto = getMaquinasConPunto(articulosPunto);
+    
+            setArtConPunto(maquinas, maquinasConPunto);
+    
+            return maquinas;
     }
 
     private HashMap<Integer, String> getMaquinasConPunto(List<ArticuloProducido> articulosPunto) {
@@ -84,6 +84,5 @@ public class MaquinaTask extends Task<List<Maquina>> {
             return articuloProducido;
         }).collect(Collectors.toList());
     }
-
 }
 

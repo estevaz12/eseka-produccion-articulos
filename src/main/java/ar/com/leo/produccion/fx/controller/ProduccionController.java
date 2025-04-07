@@ -1,7 +1,17 @@
 package ar.com.leo.produccion.fx.controller;
 
+import java.io.IOException;
+import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 import ar.com.leo.produccion.fx.service.ArticuloProducidoTask;
-import ar.com.leo.produccion.fx.service.ExcelTask;
+import ar.com.leo.produccion.fx.service.ProduccionPDFTask;
 import ar.com.leo.produccion.jdbc.DataSourceConfig;
 import ar.com.leo.produccion.model.ArticuloProducido;
 import javafx.application.Platform;
@@ -18,7 +28,17 @@ import javafx.print.Printer;
 import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -29,15 +49,6 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
-
-import java.io.IOException;
-import java.net.URL;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 public class ProduccionController implements Initializable {
 
@@ -72,7 +83,7 @@ public class ProduccionController implements Initializable {
 
     private ObservableList<ArticuloProducido> articulosProducidosList;
     private ArticuloProducidoTask articuloProducidoTask;
-    private ExcelTask excelTask;
+    private ProduccionPDFTask pdfTask;
 
     final DateTimeFormatter fromDateFormatter = DateTimeFormatter.ofPattern("[dd/MM/yyyy][dd/M/yyyy][dd/M/yy][dd/MM/yy][dd-MM-yyyy][dd-MM-yy][ddMMyyyy][ddMMyy][ddMyy]");
     final DateTimeFormatter toDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -342,30 +353,70 @@ public class ProduccionController implements Initializable {
      * @param actionEvent the {@link ActionEvent} that triggered this method
      * @throws IOException if an I/O error occurs during the export process
      */
+//     @FXML
+//     private void handleButtonExportar(ActionEvent actionEvent) throws IOException {
+//         mensajeLabel.setText(null);
+//         LocalDateTime fechaInicio = fechaInicioDatePicker.getValue().atTime(6, 0, 1);
+//         LocalDateTime fechaFin;
+//         if (actualCheckBox.isSelected()) {
+//             fechaFin = LocalDateTime.now();
+//         } else {
+//             fechaFin = fechaFinDatePicker.getValue().atTime(6, 0, 0);
+//         }
+//         if (fechaInicio.isBefore(fechaFin)) {
+//             excelTask = new ExcelTask(sectorComboBox.getSelectionModel().getSelectedItem(), fechaInicio, fechaFin, actualCheckBox.isSelected(), articuloTextBox.getText());
+//             excelTask.setOnFailed(event -> {
+// //                event.getSource().getException().printStackTrace();
+//                 mensajeLabel.setText("Error: No se ha podido exportar.");
+//             });
+//             excelTask.setOnRunning(event -> {
+//                 mensajeLabel.setText("Exportando...");
+//             });
+//             excelTask.setOnSucceeded(event -> mensajeLabel.setText("Excel generado en: " + System.getProperty("user.dir") + "\\Produccion.xls"));
+//             Thread thread = new Thread(excelTask);
+//             thread.setDaemon(true);
+//             thread.start();
+//         }
+//     }
+
     @FXML
-    private void handleButtonExportar(ActionEvent actionEvent) throws IOException {
+    private void handleButtonPDF(ActionEvent actionEvent) throws IOException {
+        String title = mensajeLabel.getText();
         mensajeLabel.setText(null);
-        LocalDateTime fechaInicio = fechaInicioDatePicker.getValue().atTime(6, 0, 1);
-        LocalDateTime fechaFin;
-        if (actualCheckBox.isSelected()) {
-            fechaFin = LocalDateTime.now();
-        } else {
-            fechaFin = fechaFinDatePicker.getValue().atTime(6, 0, 0);
+
+        List<List<String>> data = new ArrayList<>();
+
+        ObservableList<ArticuloProducido> articulos = articulosTableView.getItems();
+        for (ArticuloProducido art : articulos) {
+            List<String> row = new ArrayList<>();
+
+            String articuloVal = (String) colArticulo.getCellData(art);
+            Integer unidadesVal = (Integer) colUnidades.getCellData(art);
+            Double docenasVal = (Double) colDocenas.getCellData(art);
+            String produciendoVal = (String) colProduciendo.getCellData(art);
+
+            row.add(articuloVal);
+            row.add(String.valueOf(unidadesVal));
+            row.add(String.valueOf(docenasVal));
+            row.add(produciendoVal);
+
+            data.add(row);
         }
-        if (fechaInicio.isBefore(fechaFin)) {
-            excelTask = new ExcelTask(sectorComboBox.getSelectionModel().getSelectedItem(), fechaInicio, fechaFin, actualCheckBox.isSelected(), articuloTextBox.getText());
-            excelTask.setOnFailed(event -> {
-//                event.getSource().getException().printStackTrace();
-                mensajeLabel.setText("Error: No se ha podido exportar.");
-            });
-            excelTask.setOnRunning(event -> {
-                mensajeLabel.setText("Exportando...");
-            });
-            excelTask.setOnSucceeded(event -> mensajeLabel.setText("Excel generado en: " + System.getProperty("user.dir") + "\\Produccion.xls"));
-            Thread thread = new Thread(excelTask);
-            thread.setDaemon(true);
-            thread.start();
-        }
+
+        pdfTask = new ProduccionPDFTask(data, title);
+        
+        pdfTask.setOnFailed(event -> {
+            mensajeLabel.setText("Error: No se ha podido exportar.");
+            event.getSource().getException().printStackTrace();
+        });
+
+        pdfTask.setOnRunning(event -> {
+            mensajeLabel.setText("Exportando...");
+        });
+        pdfTask.setOnSucceeded(event -> mensajeLabel.setText("Pdf generado en: " + System.getProperty("user.dir") + "\\produccion.pdf"));
+        Thread thread = new Thread(pdfTask);
+        thread.setDaemon(true);
+        thread.start();
     }
 
     @FXML

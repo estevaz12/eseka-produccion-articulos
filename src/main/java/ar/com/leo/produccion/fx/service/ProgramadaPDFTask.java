@@ -15,16 +15,16 @@ import javafx.concurrent.Task;
 
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 
-public class MaquinaPDFTask extends Task<Void> {
+public class ProgramadaPDFTask extends Task<Void> {
 
     private final List<List<String>> data;
     private static PDType1Font textFont;
     private static int textFontSize;
 
-    public MaquinaPDFTask(List<List<String>> data) {
+    public ProgramadaPDFTask(List<List<String>> data) {
         this.data = data;
         textFont = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
-        textFontSize = 10;
+        textFontSize = 12;
     }
 
     @Override
@@ -52,15 +52,15 @@ public class MaquinaPDFTask extends Task<Void> {
         PDDocument document = new PDDocument();
 
         // Use A4 page size.
-        PDRectangle pageSize = PDRectangle.A4;
+        PDRectangle pageSize = new PDRectangle(PDRectangle.A4.getHeight(), PDRectangle.A4.getWidth());
         float margin = 25;
         float yStart = pageSize.getHeight() - margin;
-        float rowHeight = 20;
+        float rowHeight = 25;
         // Compute table width based on margin.
         float tableWidth = pageSize.getWidth() - 2 * margin;
         
         // Fixed headers.
-        String[] headers = {"Maquina", "Artículo", "Doc. Producidas", "Target", "Tiempo Estimado", "Estado"};
+        String[] headers = {"Artículo", "Talle", "A Producir", "Producido", "En Producción", "Tiempo Estimado", "Horario"};
         int numberOfColumns = headers.length;
         
         // Define column widths as fractions of the table width.
@@ -75,7 +75,7 @@ public class MaquinaPDFTask extends Task<Void> {
         // Setup title text: "CARGA DE MAQUINAS AL " with current date and time.
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         String currentDateTime = LocalDateTime.now().format(formatter);
-        String title = "CARGA DE MAQUINAS AL " + currentDateTime;
+        String title = "PROGRAMADA AL " + currentDateTime;
         float titleFontSize = 16;
         // Use a bold font for the title.
         PDType1Font titleFont = new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
@@ -103,7 +103,7 @@ public class MaquinaPDFTask extends Task<Void> {
         // Iterate through the data rows.
         for (List<String> row : data) {
             // Check if there is enough space for the next row.
-            if (yPosition - rowHeight < 5) {
+            if (yPosition - rowHeight < 0) {
                 // Close current page's content stream.
                 contentStream.close();
                 // Create a new page.
@@ -123,15 +123,7 @@ public class MaquinaPDFTask extends Task<Void> {
             for (int i = 0; i < row.size() && i < numberOfColumns; i++) {
                 String cellValue = row.get(i) == null ? "" : row.get(i);
                 float textWidth = textFont.getStringWidth(cellValue) / 1000 * textFontSize;
-                float cellCenterX;
-
-                if (i == 1) { 
-                    // Left-aligned but slightly shifted to simulate center alignment
-                    cellCenterX = textX + 20; // Small left padding to prevent sticking to edge
-                } else { 
-                    // Other columns: Fully centered
-                    cellCenterX = textX + (colWidths[i] - textWidth) / 2;
-                }
+                float cellCenterX = textX + (colWidths[i] - textWidth) / 2;
 
                 contentStream.beginText();
                 contentStream.newLineAtOffset(cellCenterX, textY);
@@ -151,10 +143,10 @@ public class MaquinaPDFTask extends Task<Void> {
         
         // Close content stream and save the document.
         contentStream.close();
-        document.save("maquinas.pdf");
+        document.save("programada.pdf");
         document.close();
 
-        File pdfFile = new File("maquinas.pdf");
+        File pdfFile = new File("programada.pdf");
         if (Desktop.isDesktopSupported()) {
             Desktop desktop = Desktop.getDesktop();
             try {

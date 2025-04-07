@@ -89,11 +89,11 @@
          prefWidth="1017.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="10.0"
          AnchorPane.leftAnchor="516.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="70.0">
          <columns>
-            <TableColumn id="columnaArticulo" fx:id="colArticulo" editable="false" prefWidth="300.0"
+            <TableColumn id="columnaArticulo" fx:id="colArticulo" editable="false" prefWidth="320.0"
                text="Artículo" />
-            <TableColumn fx:id="colUnidades" editable="false" prefWidth="150.0" text="Unidades" />
-            <TableColumn fx:id="colDocenas" editable="false" prefWidth="150.0" text="Docenas" />
-            <TableColumn fx:id="colProduciendo" editable="false" prefWidth="400.0"
+            <TableColumn fx:id="colUnidades" editable="false" prefWidth="145.0" text="Unidades" />
+            <TableColumn fx:id="colDocenas" editable="false" prefWidth="135.0" text="Docenas" />
+            <TableColumn fx:id="colProduciendo" editable="false" prefWidth="390.0"
                text="En producción" />
          </columns>
          <columnResizePolicy>
@@ -168,15 +168,15 @@
       <ProgressIndicator fx:id="progress" layoutX="950.0" layoutY="350.0" prefHeight="500.0"
          prefWidth="500.0" visible="false" />
       <Button layoutX="93.0" layoutY="394.0" mnemonicParsing="false"
-         onAction="#handleButtonExportar" prefHeight="65.0" prefWidth="228.0" text="Exportar"
-         textFill="#0bb711">
+         onAction="#handleButtonPDF" prefHeight="65.0" prefWidth="228.0" text="Exportar"
+         textFill="#5669f7">
          <font>
             <Font name="System Bold" size="21.0" />
          </font>
          <graphic>
             <ImageView>
                <image>
-                  <Image url="@../images/icons8-ms-excel-48.png" />
+                  <Image url="@../images/pdf.png" />
                </image>
             </ImageView>
          </graphic>

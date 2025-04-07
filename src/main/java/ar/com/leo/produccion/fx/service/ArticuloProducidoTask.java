@@ -29,15 +29,15 @@ public class ArticuloProducidoTask extends Task<List<ArticuloProducido>> {
 
     @Override
     protected List<ArticuloProducido> call() throws SQLException {
-        final List<ArticuloColor> articulosColores = ColorDAO.obtenerArticulosColores();
-        final List<ArticuloProducido> articulosProducidos = ArticuloProducidoDAO.obtenerProduccion(this.roomCode, this.fechaInicio, this.fechaFin, this.actual, this.articulo);
+            final List<ArticuloColor> articulosColores = ColorDAO.obtenerArticulosColores();
+            final List<ArticuloProducido> articulosProducidos = ArticuloProducidoDAO.obtenerProduccion(this.roomCode, this.fechaInicio, this.fechaFin, this.actual, this.articulo);
 
-        List<ArticuloProducido> articulosPunto = obtenerResultado(articulosColores, articulosProducidos);
+            List<ArticuloProducido> articulosPunto = obtenerResultado(articulosColores, articulosProducidos);
 
-        return articulosPunto;
+            return articulosPunto;
     }
 
-    private List<ArticuloProducido> obtenerResultado(List<ArticuloColor> articulosColores, List<ArticuloProducido> articulosProducidos) {
+     private List<ArticuloProducido> obtenerResultado(List<ArticuloColor> articulosColores, List<ArticuloProducido> articulosProducidos) {
         return articulosProducidos.stream().map(articuloProducido -> {
             final ArticuloColor articuloColorEncontrado = articulosColores.stream()
                     .filter(articuloColor -> 
@@ -60,4 +60,3 @@ public class ArticuloProducidoTask extends Task<List<ArticuloProducido>> {
     }
 
 }
-

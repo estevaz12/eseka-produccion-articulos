@@ -5,8 +5,8 @@ import ar.com.leo.produccion.fx.service.MaquinaTask;
 import ar.com.leo.produccion.jdbc.DataSourceConfig;
 import ar.com.leo.produccion.model.Maquina;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -50,8 +50,6 @@ public class MaquinaController implements Initializable {
     @FXML
     private TableColumn<Maquina, Double> colDocenas;
     @FXML
-    private TableColumn<Maquina, String> colProduccion;
-    @FXML
     private TableColumn<Maquina, Double> colTarget;
     @FXML
     private TableColumn<Maquina, String> colTiempo;
@@ -74,7 +72,7 @@ public class MaquinaController implements Initializable {
     public MaquinaController(String roomCode) {
         this.roomCode = roomCode;
     }
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         if (DataSourceConfig.dataSource == null) {
@@ -92,33 +90,33 @@ public class MaquinaController implements Initializable {
             colArticulo.setCellValueFactory(param -> {
                 SimpleStringProperty articulo = new SimpleStringProperty();
                 String styleCode = param.getValue().getStyleCode();
-                String punto = param.getValue().getPunto();
+                    String punto = param.getValue().getPunto();
+                    
+                    if (styleCode.length() > 6) {
+                        String art = "    " + styleCode.substring(0, 5);
 
-                if (styleCode.length() > 6) {
-                    String art = "    " + styleCode.substring(0, 5);
+                        if (punto != null) {
+                            art += "." + punto;
+                        }
 
-                    if (punto != null) {
-                        art += "." + punto;
-                    }
+                        String talle;
+                        if (styleCode.charAt(5) == '9') {
+                            talle = "PA";
+                        } else if (styleCode.charAt(5) == '8') {
+                            talle = "T.1";
+                        } else {
+                            talle = "T." + styleCode.charAt(5);
+                        }
 
-                    String talle;
-                    if (styleCode.charAt(5) == '9') {
-                        talle = "PA";
-                    } else if (styleCode.charAt(5) == '8') {
-                        talle = "T.1 (U)";
-                    } else {
-                        talle = "T." + styleCode.charAt(5);
-                    }
-
-                    String color = styleCode.substring(6, 8);
-                    if (styleCode.length() > 8 && styleCode.startsWith("02", 14)) // .2
-                        articulo.set(art + "    " +  talle + "    " + color + "  (.2)");
-                    else if (styleCode.length() > 8 && styleCode.startsWith("06", 14)) // .6
-                        articulo.set(art + "    " + talle + "    " + color + "  (.6)");
-                    else if (styleCode.length() > 8 && styleCode.startsWith("08", 14)) // .8
-                        articulo.set(art + "    " + talle + "    " + color + "  (.8)");
-                    else
-                        articulo.set(art + "    " + talle + "    " + color);
+                        String color = styleCode.substring(6, 8);
+                        if (styleCode.length() > 8 && styleCode.startsWith("02", 14)) // .2
+                            articulo.set(art + "    " +  talle + "    " + color + "  (.2)");
+                        else if (styleCode.length() > 8 && styleCode.startsWith("06", 14)) // .6
+                            articulo.set(art + "    " + talle + "    " + color + "  (.6)");
+                        else if (styleCode.length() > 8 && styleCode.startsWith("08", 14)) // .8
+                            articulo.set(art + "    " + talle + "    " + color + "  (.8)");
+                        else
+                            articulo.set(art + "    " + talle + "    " + color);
                 }
 
                 return articulo;
@@ -417,7 +415,7 @@ public class MaquinaController implements Initializable {
         pdfTask.setOnRunning(event -> {
             logTextArea.setText("Exportando...");
         });
-        pdfTask.setOnSucceeded(event -> logTextArea.setText("Pdf generado en: " + System.getProperty("user.dir") + "\\Produccion.xls"));
+        pdfTask.setOnSucceeded(event -> logTextArea.setText("Pdf generado en: " + System.getProperty("user.dir") + "\\produccion.pdf"));
         Thread thread = new Thread(pdfTask);
         thread.setDaemon(true);
         thread.start();

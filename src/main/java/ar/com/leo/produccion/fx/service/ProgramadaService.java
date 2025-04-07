@@ -98,6 +98,5 @@ public class ProgramadaService extends Service<List<ArticuloProducido>> {
             throw new RuntimeException(e);
         }
     }
-
 }
 
