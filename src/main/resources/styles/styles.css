@@ -23,9 +23,9 @@
   -fx-border-insets: 0;
 }
 
-#columnaArticuloMaq {
-  -fx-alignment: CENTER-LEFT;
-}
+/* #columnaArticuloMaq {
+  -fx-alignment: CENTER;
+} */
 
 .table-row-cell:odd {
   -fx-background-color: #93f9b911;

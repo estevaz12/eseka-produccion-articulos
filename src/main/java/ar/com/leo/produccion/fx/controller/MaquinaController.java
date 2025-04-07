@@ -93,7 +93,8 @@ public class MaquinaController implements Initializable {
                     String punto = param.getValue().getPunto();
                     
                     if (styleCode.length() > 6) {
-                        String art = "    " + styleCode.substring(0, 5);
+                        // String art = "    " + styleCode.substring(0, 5);
+                        String art = styleCode.substring(0, 5);
 
                         if (punto != null) {
                             art += "." + punto;
