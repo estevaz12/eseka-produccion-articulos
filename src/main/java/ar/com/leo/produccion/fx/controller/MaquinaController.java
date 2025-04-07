@@ -101,9 +101,6 @@ public class MaquinaController implements Initializable {
                         if (punto != null) {
                             art += "." + punto;
                         }
-                        if (punto != null) {
-                            art += "." + punto;
-                        }
 
                         String talle;
                         if (styleCode.charAt(5) == '9') {
