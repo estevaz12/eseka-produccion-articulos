@@ -11,14 +11,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.print.*;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.transform.Scale;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -38,8 +36,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class ProgramadaController implements Initializable {
 
@@ -241,7 +237,6 @@ public class ProgramadaController implements Initializable {
 
      private void setHorarios(List<ArticuloProducido> articulos) {
         for (ArticuloProducido art : articulos) {
-            System.out.println(art.toString());
 
             if (art.getProducir() != null && art.getProducir() > 0 && art.getProduciendo().contains("SI") && art.getIdealCycle() > 0) {
                 final long segundos = art.getIdealCycle() * (art.getProducir() * 24 - art.getUnidades())
@@ -252,7 +247,6 @@ public class ProgramadaController implements Initializable {
                     // Adding duration to the current time
                     final LocalDateTime futureTime = LocalDateTime.now().plus(duration);
                     art.setHorario(futureTime);
-                    System.out.println("Articulo: " + art.getNumero() + " - Horario: " + art.getHorario());
                 } else {
                     art.setHorario(null);
                 }
@@ -334,14 +328,19 @@ public class ProgramadaController implements Initializable {
         pdfTask = new ProgramadaPDFTask(data);
         
         pdfTask.setOnFailed(event -> {
+            logTextArea.setStyle("-fx-text-fill: red;");
             logTextArea.setText("Error: No se ha podido exportar.");
             event.getSource().getException().printStackTrace();
         });
 
         pdfTask.setOnRunning(event -> {
+            logTextArea.setStyle("-fx-text-fill: darkblue;");
             logTextArea.setText("Exportando...");
         });
-        pdfTask.setOnSucceeded(event -> logTextArea.setText("Pdf generado en: " + System.getProperty("user.dir") + "\\produccion.pdf"));
+        pdfTask.setOnSucceeded(event -> {
+            logTextArea.setStyle("-fx-text-fill: darkgreen;");
+            logTextArea.setText("Pdf generado en: " + System.getProperty("user.dir") + "\\produccion.pdf");
+        });
         Thread thread = new Thread(pdfTask);
         thread.setDaemon(true);
         thread.start();

@@ -74,6 +74,7 @@ public class MaquinaController implements Initializable {
         this.roomCode = roomCode;
     }
 
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         if (DataSourceConfig.dataSource == null) {
@@ -97,6 +98,9 @@ public class MaquinaController implements Initializable {
                     if (styleCode.length() > 6) {
                         String art = "    " + styleCode.substring(0, 5);
 
+                        if (punto != null) {
+                            art += "." + punto;
+                        }
                         if (punto != null) {
                             art += "." + punto;
                         }
@@ -437,6 +441,7 @@ public class MaquinaController implements Initializable {
         pdfTask.setOnRunning(event -> {
             logTextArea.setText("Exportando...");
         });
+        pdfTask.setOnSucceeded(event -> logTextArea.setText("Pdf generado en: " + System.getProperty("user.dir") + "\\produccion.pdf"));
         pdfTask.setOnSucceeded(event -> logTextArea.setText("Pdf generado en: " + System.getProperty("user.dir") + "\\produccion.pdf"));
         Thread thread = new Thread(pdfTask);
         thread.setDaemon(true);

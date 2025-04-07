@@ -103,7 +103,7 @@ public class MaquinaPDFTask extends Task<Void> {
         // Iterate through the data rows.
         for (List<String> row : data) {
             // Check if there is enough space for the next row.
-            if (yPosition - rowHeight < margin) {
+            if (yPosition - rowHeight < 5) {
                 // Close current page's content stream.
                 contentStream.close();
                 // Create a new page.
@@ -127,7 +127,7 @@ public class MaquinaPDFTask extends Task<Void> {
 
                 if (i == 1) { 
                     // Left-aligned but slightly shifted to simulate center alignment
-                    cellCenterX = textX + 10; // Small left padding to prevent sticking to edge
+                    cellCenterX = textX + 20; // Small left padding to prevent sticking to edge
                 } else { 
                     // Other columns: Fully centered
                     cellCenterX = textX + (colWidths[i] - textWidth) / 2;

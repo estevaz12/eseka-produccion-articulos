@@ -24,7 +24,7 @@ public class ProgramadaPDFTask extends Task<Void> {
     public ProgramadaPDFTask(List<List<String>> data) {
         this.data = data;
         textFont = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
-        textFontSize = 10;
+        textFontSize = 12;
     }
 
     @Override
@@ -52,10 +52,10 @@ public class ProgramadaPDFTask extends Task<Void> {
         PDDocument document = new PDDocument();
 
         // Use A4 page size.
-        PDRectangle pageSize = PDRectangle.A4;
+        PDRectangle pageSize = new PDRectangle(PDRectangle.A4.getHeight(), PDRectangle.A4.getWidth());
         float margin = 25;
         float yStart = pageSize.getHeight() - margin;
-        float rowHeight = 20;
+        float rowHeight = 25;
         // Compute table width based on margin.
         float tableWidth = pageSize.getWidth() - 2 * margin;
         
@@ -103,7 +103,7 @@ public class ProgramadaPDFTask extends Task<Void> {
         // Iterate through the data rows.
         for (List<String> row : data) {
             // Check if there is enough space for the next row.
-            if (yPosition - rowHeight < margin) {
+            if (yPosition - rowHeight < 0) {
                 // Close current page's content stream.
                 contentStream.close();
                 // Create a new page.
