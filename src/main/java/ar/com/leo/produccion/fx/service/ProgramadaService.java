@@ -5,7 +5,6 @@ import ar.com.leo.produccion.jdbc.ProgramadaArticuloProducidoDAO;
 import ar.com.leo.produccion.model.ArticuloColor;
 import ar.com.leo.produccion.model.ArticuloProducido;
 import ar.com.leo.produccion.model.ArticuloProgramada;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import org.apache.pdfbox.Loader;
@@ -14,8 +13,6 @@ import org.apache.pdfbox.text.PDFTextStripper;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
