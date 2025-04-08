@@ -143,10 +143,10 @@ public class ProgramadaPDFTask extends Task<Void> {
         
         // Close content stream and save the document.
         contentStream.close();
-        document.save("programada-print.pdf");
+        document.save("print.pdf");
         document.close();
 
-        File pdfFile = new File("programada-print.pdf");
+        File pdfFile = new File("print.pdf");
         if (Desktop.isDesktopSupported()) {
             Desktop desktop = Desktop.getDesktop();
             try {
