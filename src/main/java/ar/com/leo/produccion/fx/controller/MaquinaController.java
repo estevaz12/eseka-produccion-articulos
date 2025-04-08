@@ -144,6 +144,11 @@ public class MaquinaController implements Initializable {
 
                 return articulo;
             });
+
+            if (roomCode == "HOMBRE") {
+                colArticulo.setCellFactory(column -> new TableCellArticuloWithTooltip<>());
+            }
+
             colUnidades.setCellValueFactory(new PropertyValueFactory<>("pieces"));
             // add tooltip to cell over hover
             colUnidades.setCellFactory(new Callback<>() {
@@ -550,6 +555,26 @@ public class MaquinaController implements Initializable {
         seconds = Integer.parseInt(time.substring(time.indexOf('m') + 2, time.indexOf('s')));
 
         return (days * 24 * 60 * 60) + (hours * 60 * 60) + (minutes * 60) + seconds;
+    }
+
+    public static class TableCellArticuloWithTooltip<T> extends TableCell<Maquina, T> {
+        @Override
+        protected void updateItem(T item, boolean empty) {
+            super.updateItem(item, empty);
+            if (item == null || empty) {
+                setText(null);
+                setTooltip(null);
+            } else {
+                setText(item.toString());
+                // Dynamic tooltip
+//                final String styleCode = getTableView().getItems().get(getIndex()).getStyleCode().substring(0, 8);
+                final String styleCode = getTableRow().getItem().getStyleCode().substring(0, 8);
+                final Tooltip tooltip = new Tooltip(styleCode);
+                tooltip.setShowDelay(new javafx.util.Duration(100));
+                tooltip.setShowDuration(javafx.util.Duration.INDEFINITE);
+                setTooltip(tooltip);
+            }
+        }
     }
 
 }
