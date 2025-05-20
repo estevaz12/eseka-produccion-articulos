@@ -526,9 +526,12 @@ public class MaquinaController implements Initializable {
             // Filter the data based on the input
             final ObservableList<Maquina> filteredData = FXCollections.observableArrayList();
             for (Maquina maquina : this.maquinasList) {
-                if (maquina.getStyleCode() != null 
-                    && (maquina.getStyleCode()).contains(buscador.getText())) {
-                    filteredData.add(maquina);
+                if (maquina.getStyleCode() != null) {
+                    String styleCode = maquina.getStyleCode();
+                    String sub = styleCode.length() > 8 ? styleCode.substring(0, 8) : styleCode;
+                    if (sub.contains(buscador.getText())) {
+                        filteredData.add(maquina);
+                    }
                 }
             }
             // Update the table with the filtered data
