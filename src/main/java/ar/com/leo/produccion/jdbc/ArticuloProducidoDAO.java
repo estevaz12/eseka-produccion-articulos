@@ -58,7 +58,7 @@ public class ArticuloProducidoDAO {
                     "   (pm.RoomCode = '" + roomCode + "'" + " AND pm.DateRec BETWEEN '" + SQL_DATE_TIME_FORMATTER.format(fechaInicio) + "' AND '" + SQL_DATE_TIME_FORMATTER.format(fechaFin) + "')" +
                     "   OR pm.StyleCode IS NULL" +
                     ")" +
-                    (articulo.isBlank() ? "" : " AND pm.StyleCode LIKE '%" + articulo + "%'") +
+                    (articulo.isBlank() ? "" : " AND SUBSTRING(pm.StyleCode, 1, 8) LIKE '%" + articulo + "%'") +
                     " GROUP BY COALESCE(pm.StyleCode, m.StyleCode)" +
                     " ORDER BY StyleCode";
         } else {
@@ -82,7 +82,7 @@ public class ArticuloProducidoDAO {
                     " LEFT JOIN MACHINES m ON pm.StyleCode = m.StyleCode AND pm.MachCode = m.MachCode" +
                     " WHERE pm.RoomCode = '" + roomCode + "'" +
                     " AND DateRec BETWEEN '" + SQL_DATE_TIME_FORMATTER.format(fechaInicio) + "' AND '" + SQL_DATE_TIME_FORMATTER.format(fechaFin) + "'" +
-                    (articulo.isBlank() ? "" : " AND pm.StyleCode LIKE '%" + articulo + "%'") +
+                    (articulo.isBlank() ? "" : " AND SUBSTRING(pm.StyleCode, 1, 8) LIKE '%" + articulo + "%'") +
                     " GROUP BY pm.StyleCode" +
                     " ORDER BY pm.StyleCode";
         }

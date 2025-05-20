@@ -319,8 +319,18 @@ public class ProgramadaController implements Initializable {
             } else {
                 row.add(String.valueOf(producirVal));
             }
+
             row.add(String.valueOf(producidoVal));
+
+            if (produciendoVal.startsWith("SI:")) {
+                String[] maquinas = produciendoVal.substring(3).split("-");
+                Integer numMaquinas = maquinas.length;
+                if (numMaquinas > 7) {
+                    produciendoVal = "SI: " + numMaquinas + " máq.";
+                }
+            }            
             row.add(produciendoVal);
+            
             row.add(tiempoVal);
             row.add(horarioVal);
 
